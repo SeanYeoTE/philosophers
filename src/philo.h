@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:48:16 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/16 14:14:39 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/16 17:55:40 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ typedef	struct s_philo
 	t_fork	*left_fork;
 	t_fork	*right_fork;
 	pthread_t	thread;
-	t_table	*table;
 }			t_philo;
 
 typedef struct s_table

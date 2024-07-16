@@ -6,32 +6,53 @@
 #    By: seayeo <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 13:42:23 by seayeo            #+#    #+#              #
-#    Updated: 2024/07/16 13:46:27 by seayeo           ###   ########.fr        #
+#    Updated: 2024/07/16 17:53:32 by seayeo           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SRCS = main.c \
+SRC_PATH = src/
+SRC = main.c \
 		philo.c \
 		utils.c
+SRCS = $(addprefix $(SRC_PATH), $(SRC))
 
-OBJS = $(SRCS:.c=.o)
+LIBFT_PATH = libft/
+LIBFT_NAME = libft.a
+LIBFT = $(LIBFT_PATH)$(LIBFT_NAME)
+
+OBJ_PATH = objs/
+OBJ = $(SRC:.c=.o)
+OBJS = $(addprefix $(OBJ_PATH), $(OBJ))
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
+	
+all: $(LIBFT) $(NAME)
 
-all: $(NAME)
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
+$(OBJS): $(OBJ_PATH)
+
+$(OBJ_PATH):
+	mkdir -p $(OBJ_PATH)
+	
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT)
+	
+$(LIBFT):
+	make -C $(LIBFT_PATH)
 	
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(OBJS) $(NAME)
+	make clean -C $(LIBFT_PATH)
 
 fclean: clean
 	$(RM) $(NAME)
+	$(RM) $(LIBFT_PATH)$(LIBFT_NAME)
 
 re: fclean all
 

@@ -1,0 +1,4 @@
+.vscode/
+*.o
+philo
+libft.a
