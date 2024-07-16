@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:48:16 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/16 20:50:14 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/16 21:41:06 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef	struct s_philo
 	long	meals_counter;
 	bool	full;
 	long	last_meal_time;
+	t_table	*table;
 	
 	t_fork	*left_fork;
 	t_fork	*right_fork;
