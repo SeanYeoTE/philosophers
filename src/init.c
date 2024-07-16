@@ -1,37 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/16 14:14:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/16 19:03:04 by seayeo           ###   ########.fr       */
+/*   Created: 2024/07/16 20:27:15 by seayeo            #+#    #+#             */
+/*   Updated: 2024/07/16 20:51:57 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	error_exit(const char *msg)
+void	data_init(t_table	*table)
 {
-	printf("Error: %s\n", msg);
-	exit(1);
-}
+	int	i;
 
-int	main(int argc, char **argv)
-{
-	t_table	table;
-	
-	if (argc != 5 || argc != 6)
-		error_exit("Invalid number of arguments");
-	else
+	i = -1;
+	table->end_simulation = false;
+	table->philos = safe_malloc(sizeof(t_philo) * table->num_philos);
+	table->forks = safe_malloc(sizeof(t_fork) * table->num_philos);
+	while (++i < table->num_philos)
 	{
-		input_checks(&table, argv);
-		
-		init_table(&table, argc, argv);
-		
-		start_simulation(&table);
-
-		cleanup(&table);
+		safe_mutex_handlle(&table->forks[i].fork, INIT);
+		table->forks[i].id = i;
 	}
 }

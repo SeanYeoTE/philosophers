@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:48:16 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/16 17:55:40 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/16 20:50:14 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,22 @@
 #include <stdbool.h>
 #include <sys/time.h>
 #include <limits.h>
+
+#include <errno.h>
+
+#ifndef PHILO_H
+# define PHILO_H
+
+typedef enum e_opcode
+{
+	LOCK,
+	UNLOCK,
+	INIT,
+	DESTROY,
+	CREATE,
+	JOIN,
+	DETACH,
+}		t_opcode;
 
 typedef	struct s_fork
 {
@@ -48,3 +64,17 @@ typedef struct s_table
 	t_fork	*forks;
 	t_philo	*philos;
 }			t_table;
+
+void	error_exit(const char *msg);
+
+// input_check.c
+void	input_check(t_table *table, char **argv);
+
+// safe_functions.c
+void	*safe_malloc(size_t bytes);
+void	safe_mutex_handlle(pthread_mutex_t *mutex, t_opcode opcode);
+void	safe_thread_handle(pthread_t *thread, void *(*foo)(void *), void *data, t_opcode opcode);
+
+// init.c
+
+#endif
