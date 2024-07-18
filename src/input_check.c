@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:03:37 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/16 19:25:02 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/17 16:48:11 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static inline bool	is_space(char c)
 	return (c == ' ' || (c >= 9 && c <= 13));
 }
 
-static inline bool	isdigit(char c)
+static inline bool	is_digit(char c)
 {
 	return (c >= '0' && c <= '9');
 }
@@ -34,10 +34,10 @@ static const char	*valid_input(const char *str)
 		++str;
 	else if (*str == '-')
 		error_exit("No Negative number");
-	if (!isdigit(*str))
+	if (!is_digit(*str))
 		error_exit("Invalid number");
 	number = str;
-	while (isdigit(*str++))
+	while (is_digit(*str++))
 		++len;
 	if (len > 10)
 		error_exit("Number too large");
@@ -50,7 +50,7 @@ static	long	converter(const char *str)
 	
 	num = 0;
 	str = valid_input(str);
-	while (isdigit(*str))
+	while (is_digit(*str))
 	{
 		num = (num * 10) + (*str - '0');
 		++str;
@@ -61,7 +61,7 @@ static	long	converter(const char *str)
 }
 void	input_check(t_table *table, char **argv)
 {
-	table->philos = converter(argv[1]);
+	table->num_philos = converter(argv[1]);
 	table->time_to_die = converter(argv[2]) * 1000; // taking microseconds
 	table->time_to_eat = converter(argv[3]) * 1000;
 	table->time_to_sleep = converter(argv[4]) * 1000;

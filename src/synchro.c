@@ -1,52 +1,56 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   synchro.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/16 17:56:57 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/17 15:23:16 by seayeo           ###   ########.fr       */
+/*   Created: 2024/07/17 12:34:59 by seayeo            #+#    #+#             */
+/*   Updated: 2024/07/18 12:57:08 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	set_bool(pthread_mutex_t *mutex, bool *dest, bool value)
+void	wait_all_threads(t_table *table)
 {
-	safe_mutex_handlle(mutex, LOCK);
-	*dest = value;
-	safe_mutex_handlle(mutex, UNLOCK);
+	while (!get_bool(&table->table_mutex, &table->all_threads_ready))
+		;
 }
 
-bool	get_bool(pthread_mutex_t *mutex, bool *value)
+bool	all_threads_running(pthread_mutex_t *mutex, long *threads, long philo_num)
 {
 	bool	ret;
-	
+
+	ret = false;
 	safe_mutex_handlle(mutex, LOCK);
-	ret = *value;
+	if (*threads == philo_num)
+		ret = true;
 	safe_mutex_handlle(mutex, UNLOCK);
 	return (ret);
 }
 
-long	get_long(pthread_mutex_t *mutex, long *value)
-{
-	long	ret;
-	
-	safe_mutex_handlle(mutex, LOCK);
-	ret = *value;
-	safe_mutex_handlle(mutex, UNLOCK);
-	return (ret);
-}
-
-void	set_long(pthread_mutex_t *mutex, long *dest, long value)
+void	increase_long(pthread_mutex_t *mutex, long *target)
 {
 	safe_mutex_handlle(mutex, LOCK);
-	*dest = value;
+	(*target)++;
 	safe_mutex_handlle(mutex, UNLOCK);
 }
 
-bool	simulation_finished(t_table *table)
+void	de_synchronize_philos(t_philo *philo)
 {
-	return (get_bool(&table->table_mutex, &table->end_simulation));
+	if (philo->table->num_philos  % 2 == 0)
+	{
+		if (philo->id % 2 == 0)
+		{
+			precise_usleep(3e4, philo->table);
+		}
+	}
+	else
+	{
+		if (philo->id % 2)
+		{
+			thinking(philo, true);
+		}
+	}
 }

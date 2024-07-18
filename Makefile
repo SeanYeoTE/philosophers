@@ -6,7 +6,7 @@
 #    By: seayeo <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 13:42:23 by seayeo            #+#    #+#              #
-#    Updated: 2024/07/16 17:53:32 by seayeo           ###   ########.fr        #
+#    Updated: 2024/07/18 11:53:47 by seayeo           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,16 @@ NAME = philo
 SRC_PATH = src/
 SRC = main.c \
 		philo.c \
-		utils.c
+		utils.c \
+		init.c \
+		input_check.c \
+		safe_functions.c \
+		simulation.c \
+		synchro.c \
+		write.c \
+		monitor.c \
+		
+		
 SRCS = $(addprefix $(SRC_PATH), $(SRC))
 
 LIBFT_PATH = libft/
@@ -27,7 +36,7 @@ OBJ = $(SRC:.c=.o)
 OBJS = $(addprefix $(OBJ_PATH), $(OBJ))
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = 
 RM = rm -f
 	
 all: $(LIBFT) $(NAME)

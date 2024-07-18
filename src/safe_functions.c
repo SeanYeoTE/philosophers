@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 20:29:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/16 20:49:25 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/17 16:54:05 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	*safe_malloc(size_t bytes)
 	return (ret);
 }
 
-static void	handle_mutex_error(int status, t_opcode opcode)
+static	void	handle_mutex_error(int status, t_opcode opcode)
 {
 	if (0 == status)
 		return ;
@@ -39,6 +39,7 @@ static void	handle_mutex_error(int status, t_opcode opcode)
 	else if (EBUSY == status)
 		error_exit("Mutex is locked");
 }
+
 void	safe_mutex_handlle(pthread_mutex_t *mutex, t_opcode opcode)
 {
 	if (LOCK == opcode)
@@ -55,7 +56,7 @@ void	safe_mutex_handlle(pthread_mutex_t *mutex, t_opcode opcode)
 
 // FOR THREADS //
 
-static void handle_thread_error(int status, t_opcode opcode)
+static	void	handle_thread_error(int status, t_opcode opcode)
 {
 	if (0 == status)
 		return ;
