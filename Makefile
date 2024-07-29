@@ -6,23 +6,15 @@
 #    By: seayeo <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 13:42:23 by seayeo            #+#    #+#              #
-#    Updated: 2024/07/18 11:53:47 by seayeo           ###   ########.fr        #
+#    Updated: 2024/07/26 13:20:53 by seayeo           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
 SRC_PATH = src/
-SRC = main.c \
-		philo.c \
-		utils.c \
-		init.c \
-		input_check.c \
-		safe_functions.c \
-		simulation.c \
-		synchro.c \
-		write.c \
-		monitor.c \
+SRC = 	philo.c \
+		check_input.c \
 		
 		
 SRCS = $(addprefix $(SRC_PATH), $(SRC))
