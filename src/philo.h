@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:50:36 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/26 13:56:23 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/29 15:20:15 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ typedef struct s_philo
 	int				right_fork;
 	int				eat_count;
 	long			last_eat;
+	bool			full;
+	t_data			*data;
 	pthread_mutex_t	*forks;
 	
 	// pthread_mutex_t	*print;
