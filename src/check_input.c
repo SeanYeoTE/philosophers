@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:17:09 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/26 13:22:44 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/01 13:47:55 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,7 @@ static	char	*input_rejection(char *str)
 	}
 	if (i > 10)
 		write_error("Error: Invalid argument");
-	else
-		return (temp);
+	return (temp);
 }
 
 static	long	converter(char *str)

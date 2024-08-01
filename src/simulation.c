@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*    simulation.c                                      :+:      :+:    :+:   */
+/*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/29 15:21:50 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/01 13:48:34 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	thinking(t_philo *philo)
 {
 	print_status(philo, "is thinking");
-	usleep(philo->data->time_think * 1000);
+	// usleep(philo->data->time_think * 1000);
 }
 
 static void	eat(t_philo *philo)
@@ -30,8 +30,8 @@ static void	eat(t_philo *philo)
 	safe_mutex_handle(&forks[philo->right_fork].fork_mutex, LOCK);
 	print_status(philo, "has taken a fork");
 	set_long(&philo->philo_mutex, &philo->last_eat, eating_time);
-	set_long(&forks[philo->left_fork].time_last_used, eating_time);
-	set_long(&forks[philo->right_fork].time_last_used, eating_time);
+	set_long_nl(&forks[philo->left_fork].time_last_used, eating_time);
+	set_long_nl(&forks[philo->right_fork].time_last_used, eating_time);
 	print_status(philo, "is eating");
 	philo->eat_count++;
 	usleep(philo->data->time_eat * 1000);
@@ -40,7 +40,7 @@ static void	eat(t_philo *philo)
 	safe_mutex_handle(&forks[philo->right_fork].fork_mutex, UNLOCK);
 }
 
-void	mealtime(void *data)
+void	*mealtime(void *data)
 {
 	t_philo	*philo;
 	
@@ -57,7 +57,7 @@ void	mealtime(void *data)
 			sleeping(philo);
 			
 			if (philo->data->max_eat > 0 && philo->eat_count == philo->data->max_eat)
-				set_bool(philo->philo_mutex, philo->full, true);
+				set_bool(philo->philo_mutex, &philo->full, true);
 			
 			thinking(philo);
 		}
@@ -80,6 +80,6 @@ void	simulation(t_data *data)
 	i = -1;
 	while (++i < data->num_philo)
 		safe_thread_handle(&data->philos[i].thread, NULL, NULL, JOIN);
-	set_bool(data->data_mutex, data->end_simulation, true);
+	set_bool(data->data_mutex, &data->end_simulation, true);
 	safe_thread_handle(&data->monitor_thread, NULL, NULL, JOIN);
 }

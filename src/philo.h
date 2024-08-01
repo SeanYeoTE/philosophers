@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:50:36 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/29 15:20:15 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/01 13:48:14 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # include <sys/time.h>
 # include <stdbool.h>
 # include <limits.h>
+
+typedef struct s_data t_data;
 
 typedef enum e_opcode
 {
@@ -92,3 +94,15 @@ void	init_data(t_data *data);
 void	*safe_malloc(size_t bytes);
 void	safe_mutex_handle(pthread_mutex_t *mutex, t_opcode opcode);
 void	safe_thread_handle(pthread_t *thread, void *(*func)(void *), void *arg, t_opcode opcode);
+
+// helpers.c
+bool	simulation_finished(t_data *data);
+void    set_bool(pthread_mutex_t mutex, bool *dest, bool value);
+bool	get_bool(pthread_mutex_t mutex, bool *src);
+void    set_long_nl(long *dest, long value);
+void    set_long(pthread_mutex_t *mutex, long *dest, long value);
+void    print_status(t_philo *philo, char *status);
+
+// simulation.c
+void	*mealtime(void *data);
+void	simulation(t_data *data);

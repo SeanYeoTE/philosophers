@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:43:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/29 13:17:20 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/01 13:32:46 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ static void init_philos(t_data *data)
         philo->right_fork = (i + 1) % data->num_philo;
         philo->eat_count = 0;
         philo->last_eat = gettime();
-        philo->forks = data->forks;
+        philo->full = false;
+        philo->data = data;
         safe_mutex_handle(&philo->philo_mutex, INIT);
     }
 }
