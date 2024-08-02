@@ -6,16 +6,51 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/01 13:48:34 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/02 18:14:37 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	thinking(t_philo *philo)
+static bool	check_hungriest(t_philo *philo)
 {
+	int	i;
+	long	last_meal;
+	long	prev_last_meal;
+	long	next_last_meal;
+
+	i = philo->id;
+	last_meal = get_long(philo->philo_mutex, &philo->last_eat);
+	prev_last_meal = get_long(philo->data->philos[i - 1].philo_mutex, &philo->data->philos[i - 1].last_eat);
+	next_last_meal = get_long(philo->data->philos[i + 1].philo_mutex, &philo->data->philos[i + 1].last_eat);
+	if (last_meal > prev_last_meal && last_meal > next_last_meal)
+		return (true);
+	return (false);
+}
+
+static void	sleeping(t_philo *philo)
+{
+	print_status(philo, "is sleeping");
+	usleep(philo->data->time_sleep * 1000);
+}
+
+static void	thinking(t_philo *philo)
+{
+	long	t_eat;
+	long	t_sleep;
+	long	t_think;
+	
 	print_status(philo, "is thinking");
-	// usleep(philo->data->time_think * 1000);
+	if (check_hungriest(philo))
+		return ;
+	if (philo->data->num_philo % 2 == 0)
+		return ;
+	t_eat = philo->data->time_eat;
+	t_sleep = philo->data->time_sleep;
+	t_think = t_eat * 2 - t_sleep;
+	if (t_think < 0)
+		t_think = 0;
+	usleep(t_think * 1000);
 }
 
 static void	eat(t_philo *philo)
@@ -45,7 +80,8 @@ void	*mealtime(void *data)
 	t_philo	*philo;
 	
 	philo = (t_philo *)data;
-
+	puts("mealtime");
+	print_status(philo, "idling");
 	while(!simulation_finished(philo->data))
 	{
 		if (get_bool(philo->philo_mutex, &philo->full))
@@ -60,6 +96,29 @@ void	*mealtime(void *data)
 				set_bool(philo->philo_mutex, &philo->full, true);
 			
 			thinking(philo);
+		}
+	}
+	return (NULL);
+}
+
+void	*monitor(void *data)
+{
+	int	i;
+	t_data *d;
+
+	d = (t_data *)data;
+	
+	while (get_bool(d->data_mutex, &d->end_simulation) == false)
+	{
+		i = -1;
+		while (++i < d->num_philo)
+		{
+			if (gettime() - d->philos[i].last_eat > d->time_die)
+			{
+				print_status(&d->philos[i], "died");
+				set_bool(d->data_mutex, &d->end_simulation, true);
+				break ;
+			}
 		}
 	}
 	return (NULL);

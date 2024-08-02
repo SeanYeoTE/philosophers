@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:50:36 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/01 13:48:14 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/02 17:46:57 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ void	safe_thread_handle(pthread_t *thread, void *(*func)(void *), void *arg, t_o
 
 // helpers.c
 bool	simulation_finished(t_data *data);
+long    get_long(pthread_mutex_t mutex, long *src);
 void    set_bool(pthread_mutex_t mutex, bool *dest, bool value);
 bool	get_bool(pthread_mutex_t mutex, bool *src);
 void    set_long_nl(long *dest, long value);
