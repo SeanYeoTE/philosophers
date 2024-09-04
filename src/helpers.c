@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 14:54:07 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/02 18:11:10 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/04 11:24:52 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void    set_long(pthread_mutex_t *mutex, long *dest, long value)
 void    print_status(t_philo *philo, char *status)
 {
     long    time;
-    puts("print_status");
+    // puts("print_status");
     time = gettime() - philo->data->start_time;
     safe_mutex_handle(&philo->data->write_mutex, LOCK);
     printf("%ld %d %s\n", time, philo->id + 1, status);

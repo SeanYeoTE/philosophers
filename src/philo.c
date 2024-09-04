@@ -6,21 +6,20 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:50:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/29 13:17:43 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/04 12:50:45 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long	gettime(void)
+long long gettime(void)
 {
 	struct timeval	time;
-	long			ms;
+	long long		ms;
 
 	if (gettimeofday(&time, NULL))
 		write_error("Error: gettimeofday failed");
-	ms = time.tv_sec * 1000;
-	ms += time.tv_usec / 1000;
+	ms = (time.tv_sec * 1000000LL) + time.tv_usec;
 	return (ms);
 }
 

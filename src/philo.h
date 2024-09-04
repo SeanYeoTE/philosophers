@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:50:36 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/02 17:46:57 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/04 16:30:01 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct s_data
 	long			start_time;
 	long			max_eat;
 	bool			end_simulation;
+	bool			all_threads_ready;
 	
 	long			threads_running;
 	pthread_mutex_t data_mutex;
@@ -81,8 +82,8 @@ typedef struct s_data
 
 
 // philo.c
-void	write_error(char *str);
-long	gettime(void);
+void		write_error(char *str);
+long long	gettime(void);
 
 // check_input.c
 void	check_input(char **argv, t_data *data);
