@@ -6,76 +6,73 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/04 16:30:10 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/05 13:06:12 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	mealtime(void *data)
-{
-	t_philo	*philo;
-
-	philo = (t_philo *)data;
-	wait_all_threads(philo->data);
-	
-	while (!get_bool(philo->data->data_mutex, &philo->data->end_simulation))
-	{
-		// needs to eat
-	
-		// eating
-		safe_mutex_handle(&philo->philo_mutex, LOCK);
-		
-		// sleeping
-
-		// thinking
-	}
-}
-		
-		
-void	wait_all_threads(t_data *data)
-{
-	while (!get_bool(&data->data_mutex, &data->all_threads_ready))
-		;
+long get_timestamp_in_ms() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 }
 
-static void	*monitor(void *arg)
-{
-	t_data	*data;
-	int		i;
-
-	data = (t_data *)arg;
-
-	while (!get_bool(data->data_mutex, &data->end_simulation))
-	{
-		i = -1;
-		while (++i < data->num_philo)
-		{
-			if (get_long(data->data_mutex, &data->philos[i].last_eat) + data->time_die < gettime())
-			{
-				print_status(&data->philos[i], "died");
-				set_bool(data->data_mutex, &data->end_simulation, true);
-				return (NULL);
-			}
-		}
-	}
-	return (NULL);
+void print_state_change(t_philo *philo, const char *state) {
+    long timestamp = get_timestamp_in_ms() - philo->data->start_time;
+    printf("%ld %d %s\n", timestamp, philo->id + 1, state);
 }
 
-void	simulation(t_data *data)
-{
-	int		i;
+void think(t_philo *philo) {
+    print_state_change(philo, "is thinking");
+    usleep(rand() % 1000);
+}
 
-	i = -1;
-	if (data->max_eat == 0)
-		return ;
-	safe_thread_handle(&data->monitor_thread, monitor, data, CREATE);
+void eat(t_philo *philo) {
+    print_state_change(philo, "is eating");
+    usleep(philo->data->time_to_eat * 1000);
+}
 
-	while (++i < data->num_philo)
-		safe_thread_handle(&data->philos[i].thread, mealtime, &data->philos[i], CREATE);
-	i = -1;
-	while (++i < data->num_philo)
-		safe_thread_handle(&data->philos[i].thread, NULL, NULL, JOIN);
-	set_bool(data->data_mutex, &data->end_simulation, true);
-	safe_thread_handle(&data->monitor_thread, NULL, NULL, JOIN);
+void sleep_philo(t_philo *philo) {
+    print_state_change(philo, "is sleeping");
+    usleep(philo->data->time_to_sleep * 1000);
+}
+
+void pick_up_forks(t_philo *philo) {
+    int left_fork = philo->id;
+    int right_fork = (philo->id + 1) % philo->data->num_philosophers;
+
+    pthread_mutex_lock(&philo->data->forks[left_fork]);
+    print_state_change(philo, "has taken a fork");
+    pthread_mutex_lock(&philo->data->forks[right_fork]);
+    print_state_change(philo, "has taken a fork");
+}
+
+void put_down_forks(t_philo *philo) {
+    int left_fork = philo->id;
+    int right_fork = (philo->id + 1) % philo->data->num_philosophers;
+
+    pthread_mutex_unlock(&philo->data->forks[right_fork]);
+    pthread_mutex_unlock(&philo->data->forks[left_fork]);
+}
+
+void *philosopher_routine(void *arg) {
+    t_philo *philo = (t_philo *)arg;
+
+    // Increment the ready count
+    pthread_mutex_lock(&philo->data->start_mutex);
+    philo->data->ready_count++;
+    pthread_mutex_unlock(&philo->data->start_mutex);
+
+    // Busy-wait until the start flag is set
+    while (!philo->data->start_flag);
+
+    while (!philo->data->end_simulation) {
+        think(philo);
+        pick_up_forks(philo);
+        eat(philo);
+        put_down_forks(philo);
+        sleep_philo(philo);
+    }
+    return NULL;
 }

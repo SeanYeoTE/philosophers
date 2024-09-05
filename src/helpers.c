@@ -6,66 +6,68 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 14:54:07 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/04 11:24:52 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/05 13:06:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-bool    simulation_finished(t_data *data)
-{
-    if (data->max_eat == 0)
-        return (false);
-    if (data->threads_running == 0)
-        return (true);
-    return (false);
+void initialize_mutexes(t_data *data) {
+    data->forks = malloc(data->num_philosophers * sizeof(pthread_mutex_t));
+    if (!data->forks) {
+        perror("Failed to allocate memory for forks");
+        exit(EXIT_FAILURE);
+    }
+    int i = 0;
+    while (i < data->num_philosophers) {
+        pthread_mutex_init(&data->forks[i], NULL);
+        i++;
+    }
+    pthread_mutex_init(&data->start_mutex, NULL);
 }
 
-long    get_long(pthread_mutex_t mutex, long *src)
-{
-    long    ret;
+void create_philosopher_threads(t_data *data, t_philo *philosophers) {
+    data->philosophers = malloc(data->num_philosophers * sizeof(pthread_t));
+    if (!data->philosophers) {
+        perror("Failed to allocate memory for philosophers");
+        exit(EXIT_FAILURE);
+    }
 
-    safe_mutex_handle(&mutex, LOCK);
-    ret = *src;
-    safe_mutex_handle(&mutex, UNLOCK);
-    return (ret);
+    data->ready_count = 0;
+    data->start_flag = 0;
+
+    int i = 0;
+    while (i < data->num_philosophers) {
+        philosophers[i].id = i;
+        philosophers[i].data = data;
+        philosophers[i].times_eaten = 0;
+        philosophers[i].last_meal_time = 0;
+        pthread_create(&data->philosophers[i], NULL, philosopher_routine, &philosophers[i]);
+        i++;
+    }
+
+    // Wait until all threads are ready
+    while (data->ready_count < data->num_philosophers);
+
+    // Set the start flag to release all threads
+    data->start_flag = 1;
 }
 
-void    set_bool(pthread_mutex_t mutex, bool *dest, bool value)
-{
-    safe_mutex_handle(&mutex, LOCK);
-    *dest = value;
-    safe_mutex_handle(&mutex, UNLOCK);
+void join_philosopher_threads(t_data *data) {
+    int i = 0;
+    while (i < data->num_philosophers) {
+        pthread_join(data->philosophers[i], NULL);
+        i++;
+    }
 }
 
-bool    get_bool(pthread_mutex_t mutex, bool *src)
-{
-    bool    ret;
+void destroy_mutexes(t_data *data) {
+    int i = 0;
+    while (i < data->num_philosophers) {
+        pthread_mutex_destroy(&data->forks[i]);
+        i++;
+    }
+    free(data->forks);
+    free(data->philosophers);
 
-    safe_mutex_handle(&mutex, LOCK);
-    ret = *src;
-    safe_mutex_handle(&mutex, UNLOCK);
-    return (ret);
-}
-
-void    set_long_nl(long *dest, long value)
-{
-    *dest = value;
-}
-
-void    set_long(pthread_mutex_t *mutex, long *dest, long value)
-{
-    safe_mutex_handle(mutex, LOCK);
-    *dest = value;
-    safe_mutex_handle(mutex, UNLOCK);
-}
-
-void    print_status(t_philo *philo, char *status)
-{
-    long    time;
-    // puts("print_status");
-    time = gettime() - philo->data->start_time;
-    safe_mutex_handle(&philo->data->write_mutex, LOCK);
-    printf("%ld %d %s\n", time, philo->id + 1, status);
-    safe_mutex_handle(&philo->data->write_mutex, UNLOCK);
+    pthread_mutex_destroy(&data->start_mutex);
 }
