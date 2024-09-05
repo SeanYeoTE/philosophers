@@ -6,68 +6,54 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 14:54:07 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/05 13:06:00 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/05 18:47:36 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-void initialize_mutexes(t_data *data) {
-    data->forks = malloc(data->num_philosophers * sizeof(pthread_mutex_t));
-    if (!data->forks) {
-        perror("Failed to allocate memory for forks");
-        exit(EXIT_FAILURE);
-    }
-    int i = 0;
-    while (i < data->num_philosophers) {
-        pthread_mutex_init(&data->forks[i], NULL);
-        i++;
-    }
-    pthread_mutex_init(&data->start_mutex, NULL);
+
+long get_timestamp_in_ms() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 }
 
-void create_philosopher_threads(t_data *data, t_philo *philosophers) {
-    data->philosophers = malloc(data->num_philosophers * sizeof(pthread_t));
-    if (!data->philosophers) {
-        perror("Failed to allocate memory for philosophers");
-        exit(EXIT_FAILURE);
-    }
-
-    data->ready_count = 0;
-    data->start_flag = 0;
-
-    int i = 0;
-    while (i < data->num_philosophers) {
-        philosophers[i].id = i;
-        philosophers[i].data = data;
-        philosophers[i].times_eaten = 0;
-        philosophers[i].last_meal_time = 0;
-        pthread_create(&data->philosophers[i], NULL, philosopher_routine, &philosophers[i]);
-        i++;
-    }
-
-    // Wait until all threads are ready
-    while (data->ready_count < data->num_philosophers);
-
-    // Set the start flag to release all threads
-    data->start_flag = 1;
+void print_state_change(t_philo *philo, const char *state) {
+    long timestamp = get_timestamp_in_ms() - philo->data->start_time;
+    printf("%ld %d %s\n", timestamp, philo->id + 1, state);
 }
 
-void join_philosopher_threads(t_data *data) {
-    int i = 0;
-    while (i < data->num_philosophers) {
-        pthread_join(data->philosophers[i], NULL);
-        i++;
-    }
+void think(t_philo *philo) {
+    print_state_change(philo, "is thinking");
+    usleep(rand() % 1000);
 }
 
-void destroy_mutexes(t_data *data) {
-    int i = 0;
-    while (i < data->num_philosophers) {
-        pthread_mutex_destroy(&data->forks[i]);
-        i++;
-    }
-    free(data->forks);
-    free(data->philosophers);
+void eat(t_philo *philo) {
+    long timestamp = get_timestamp_in_ms() - philo->data->start_time;
+    philo->last_meal_time = timestamp;
+    print_state_change(philo, "is eating");
+    usleep(philo->data->time_to_eat * 1000);
+}
 
-    pthread_mutex_destroy(&data->start_mutex);
+void sleep_philo(t_philo *philo) {
+    print_state_change(philo, "is sleeping");
+    usleep(philo->data->time_to_sleep * 1000);
+}
+
+void pick_up_forks(t_philo *philo) {
+    int left_fork = philo->id;
+    int right_fork = (philo->id + 1) % philo->data->num_philosophers;
+
+    pthread_mutex_lock(&philo->data->forks[left_fork]);
+    print_state_change(philo, "has taken a fork");
+    pthread_mutex_lock(&philo->data->forks[right_fork]);
+    print_state_change(philo, "has taken a fork");
+}
+
+void put_down_forks(t_philo *philo) {
+    int left_fork = philo->id;
+    int right_fork = (philo->id + 1) % philo->data->num_philosophers;
+
+    pthread_mutex_unlock(&philo->data->forks[right_fork]);
+    pthread_mutex_unlock(&philo->data->forks[left_fork]);
 }

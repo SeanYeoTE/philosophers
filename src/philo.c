@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:50:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/05 17:31:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/05 18:45:42 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,16 @@ int	main(int argc, char **argv)
 		perror("Failed to allocate memory for philosophers");
 		return (1);
 	}
+	data.philosophers = philosophers;
 	initialize_mutexes(&data);
 	create_philosopher_threads(&data, philosophers);
+
+	pthread_t monitor_thread;
+    pthread_create(&monitor_thread, NULL, monitor_routine, &data);
+
 	join_philosopher_threads(&data);
+	pthread_join(monitor_thread, NULL);
+	
 	destroy_mutexes(&data);
 	return (0);
 }
