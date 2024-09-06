@@ -11,28 +11,34 @@
 
 typedef struct s_data t_data;
 
+typedef struct s_fork {
+    pthread_mutex_t mutex;
+} t_fork;
+
 typedef struct s_philo {
-	int id;
-	t_data *data;
-	int times_eaten;
-	long last_meal_time;
-	pthread_t thread;
+    int id;
+    t_data *data;
+    long	times_eaten;
+    long	last_meal_time;
+	bool	full;
+    pthread_t thread;
+    pthread_mutex_t mutex;
 } t_philo;
 
 typedef struct s_data {
-	pthread_mutex_t *forks;
-	pthread_mutex_t start_mutex;
-	int num_philosophers;
-	int time_to_die;
-	int time_to_eat;
-	int time_to_sleep;
-	int num_times_each_philosopher_must_eat;
-	int end_simulation;
-	long start_time;
-	int ready_count;
-	int start_flag;
-	pthread_t *monitor_thread;
-	t_philo *philosophers;
+    t_fork *forks;
+    pthread_mutex_t start_mutex;
+    long num_philosophers;
+    long time_to_die;
+    long time_to_eat;
+    long time_to_sleep;
+    long max_meals;
+    bool	end_simulation;
+    long start_time;
+    long ready_count;
+    bool	start_flag;
+    pthread_t monitor_thread;
+    t_philo *philosophers;
 } t_data;
 
 
@@ -55,5 +61,11 @@ void destroy_mutexes(t_data *data);
 // simulation.c
 void *philosopher_routine(void *arg);
 void *monitor_routine(void *arg);
+
+// safe_functions.c
+bool	get_bool(pthread_mutex_t *mutex, bool *value);
+void	set_bool(pthread_mutex_t *mutex, bool *value, bool new_value);
+long	get_long(pthread_mutex_t *mutex, long *value);
+void	set_long(pthread_mutex_t *mutex, long *value, long new_value);
 
 #endif
