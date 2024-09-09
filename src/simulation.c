@@ -6,43 +6,59 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/06 16:04:04 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/09 18:16:11 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/**
+ * @brief Main routine for each philosopher thread
+ *
+ * This function implements the main loop for each philosopher.
+ * It waits for the simulation to start, then alternates between
+ * thinking, eating, and sleeping until the simulation ends or
+ * the philosopher becomes full.
+ *
+ * @param arg Pointer to the philosopher structure (cast to void*)
+ * @return void* Always returns NULL
+ */
 void *philosopher_routine(void *arg) {
 	t_philo *philo = (t_philo *)arg;
 
-	// Increment the ready count
-	pthread_mutex_lock(&philo->data->start_mutex);
-	philo->data->ready_count++;
-	pthread_mutex_unlock(&philo->data->start_mutex);
+	set_long(&philo->data->start_mutex, &philo->data->ready_count, get_long(&philo->data->start_mutex, &philo->data->ready_count) + 1);
 
-	// Busy-wait until the start flag is set
-	 while (!get_bool(&philo->data->start_mutex, &philo->data->start_flag));
+	while (!get_bool(&philo->data->start_mutex, &philo->data->start_flag));
 	
-	philo->data->start_time = get_timestamp_in_ms();
-	usleep(philo->id * 100);
+	set_long(&philo->mutex, &philo->last_meal_time, get_timestamp_in_ms());
 	
-	pthread_mutex_lock(&philo->mutex);
-    philo->last_meal_time = get_timestamp_in_ms();
-    pthread_mutex_unlock(&philo->mutex);
-	
-	while (!philo->data->end_simulation) {
+	while (!get_bool(&philo->data->start_mutex, &philo->data->end_simulation))
+	{
+		if (get_bool(&philo->mutex, &philo->full))
+			break;
 		
-		pick_up_forks(philo);
-		eat(philo);
-		put_down_forks(philo);
-		if (philo->times_eaten == philo->data->max_meals && philo->data->max_meals > 0)
+        pick_up_forks(philo);
+        eat(philo);
+        put_down_forks(philo);
+       
+		if (get_long(&philo->mutex, &philo->times_eaten) == philo->data->max_meals && philo->data->max_meals > 0)
 			set_bool(&philo->mutex, &philo->full, true);
+		
 		sleep_philo(philo);
-		think(philo);
+        think(philo);
 	}
 	return NULL;
 }
 
+/**
+ * @brief Check if a philosopher has died
+ *
+ * This function checks if the time since a philosopher's last meal
+ * exceeds the time_to_die parameter.
+ *
+ * @param philo Pointer to the philosopher structure
+ * @return bool true if the philosopher has died, false otherwise
+ */
 static bool	philo_died(t_philo *philo)
 {
 	long 	elapsed;
@@ -59,11 +75,23 @@ static bool	philo_died(t_philo *philo)
 	return (false);
 }
 
+/**
+ * @brief Monitor routine to check for dead philosophers
+ *
+ * This function runs in a separate thread and continuously checks
+ * if any philosopher has died. If a philosopher dies, it ends the simulation.
+ *
+ * @param arg Pointer to the shared data structure (cast to void*)
+ * @return void* Always returns NULL
+ */
 void	*monitor_routine(void *arg)
 {
     t_data *data = (t_data *)arg;
     int i = 0;
 
+	while (!get_bool(&data->start_mutex, &data->start_flag))
+		usleep(1000);  // Sleep for 1ms to reduce CPU usage
+	
 	while (!get_bool(&data->start_mutex, &data->end_simulation))
     {
         i = -1;
@@ -73,9 +101,6 @@ void	*monitor_routine(void *arg)
 			{
 				print_state_change(&data->philosophers[i], "died");
 				set_bool(&data->start_mutex, &data->end_simulation, true);
-				// pthread_mutex_lock(&data->start_mutex);
-				// data->end_simulation = true;
-				// pthread_mutex_unlock(&data->start_mutex);
 				return NULL;
 			}
 		}
