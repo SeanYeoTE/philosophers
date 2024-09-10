@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/10 12:20:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/10 12:54:53 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,18 @@ void *philosopher_routine(void *arg) {
 	{
 		if (get_bool(&philo->mutex, &philo->full))
 			break;
+		else
+		{
+			pick_up_forks(philo);
+			eat(philo);
+			put_down_forks(philo);
 		
-        pick_up_forks(philo);
-        eat(philo);
-        put_down_forks(philo);
-       
-		if (get_long(&philo->mutex, &philo->times_eaten) == philo->data->max_meals && philo->data->max_meals > 0)
-			set_bool(&philo->mutex, &philo->full, true);
-		
-		sleep_philo(philo);
-        think(philo);
+			if (get_long(&philo->mutex, &philo->times_eaten) == philo->data->max_meals && philo->data->max_meals > 0)
+				set_bool(&philo->mutex, &philo->full, true);
+			
+			sleep_philo(philo);
+			think(philo);
+		}
 	}
 	return NULL;
 }
@@ -100,12 +102,12 @@ void	*monitor_routine(void *arg)
 		{
 			if (philo_died(&data->philosophers[i]))
 			{
-				print_state_change(&data->philosophers[i], "died");
 				set_bool(&data->start_mutex, &data->end_simulation, true);
+				print_state_change(&data->philosophers[i], "died");
 				return NULL;
 			}
 		}
-        usleep(1000); // Check every 1ms
+        // usleep(1000); // Check every 1ms
     }
     return NULL;
 }
