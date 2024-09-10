@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/09 18:16:11 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/10 12:20:59 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,9 @@ void *philosopher_routine(void *arg) {
 
 	while (!get_bool(&philo->data->start_mutex, &philo->data->start_flag));
 	
-	set_long(&philo->mutex, &philo->last_meal_time, get_timestamp_in_ms());
-	
+	// Set last_meal_time to the simulation start time
+	set_long(&philo->mutex, &philo->last_meal_time, philo->data->start_time);
+	usleep(philo->id * 100);
 	while (!get_bool(&philo->data->start_mutex, &philo->data->end_simulation))
 	{
 		if (get_bool(&philo->mutex, &philo->full))
@@ -67,7 +68,8 @@ static bool	philo_died(t_philo *philo)
 	if (get_bool(&philo->mutex, &philo->full))
 		return (false);
 	
-	elapsed = get_timestamp_in_ms() - get_long(&philo->mutex, &philo->last_meal_time);
+	elapsed = get_timestamp_in_ms() - philo->data->start_time;
+	elapsed = elapsed - get_long(&philo->mutex, &philo->last_meal_time);
 	time_to_die = philo->data->time_to_die;
 	
 	if (elapsed > time_to_die)
@@ -89,8 +91,7 @@ void	*monitor_routine(void *arg)
     t_data *data = (t_data *)arg;
     int i = 0;
 
-	while (!get_bool(&data->start_mutex, &data->start_flag))
-		usleep(1000);  // Sleep for 1ms to reduce CPU usage
+	while (!get_bool(&data->start_mutex, &data->start_flag));
 	
 	while (!get_bool(&data->start_mutex, &data->end_simulation))
     {

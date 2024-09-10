@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:50:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/09 18:16:45 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/10 12:07:14 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,13 +107,6 @@ int	main(int argc, char **argv)
 	
 	create_philosopher_threads(&data);
 
-    // Wait for all philosophers to be ready
-    while (get_long(&data.start_mutex, &data.ready_count) < data.num_philosophers)
-        usleep(1000);
-
-    // Set the start time and start flag to begin the simulation
-    data.start_time = get_timestamp_in_ms();
-    set_bool(&data.start_mutex, &data.start_flag, true);
 	
 	join_philosopher_threads(&data);
 	
