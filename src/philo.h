@@ -123,10 +123,6 @@ void put_down_forks(t_philo *philo);
 
 /**
  * @brief Determine the hungriest philosopher among the current philosopher and its two neighbors
- * 
- * This function compares the current philosopher with its left and right neighbors
- * to determine if itself has waited the longest since their last meal.
- * 
  * @param data Pointer to the shared data structure
  * @param current_id The ID of the current philosopher
  * @return bool true if the current philosopher is the hungriest, false otherwise
@@ -159,6 +155,13 @@ void join_philosopher_threads(t_data *data);
 void destroy_mutexes(t_data *data);
 
 // simulation.c
+/**
+* @brief Main routine for single philosopher thread
+* @param arg Pointer to the philosopher structure (cast to void*)
+* @return void* Always returns NULL
+*/
+void *single_philo(void *arg);
+
 /**
  * @brief Main routine for each philosopher thread
  * @param arg Pointer to the philosopher structure

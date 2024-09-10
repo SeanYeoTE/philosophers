@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:50:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/10 12:07:14 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/10 16:46:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,12 @@ int	initialize_data(t_data *data, int argc, char **argv)
         return 0;
 	else if (argc == 5)
 		data->max_meals = -1;
+    pthread_mutex_init(&data->start_mutex, NULL);
     set_bool(&data->start_mutex, &data->end_simulation, false);
     set_long(&data->start_mutex, &data->ready_count, 0);
     set_bool(&data->start_mutex, &data->start_flag, false);
 
-    pthread_mutex_init(&data->start_mutex, NULL);
+    
     return 1;
 }
 
@@ -109,7 +110,7 @@ int	main(int argc, char **argv)
 
 	
 	join_philosopher_threads(&data);
-	
+	set_bool(&data.start_mutex, &data.end_simulation, true);
 	pthread_join(monitor_thread, NULL);
 	
 	destroy_mutexes(&data);

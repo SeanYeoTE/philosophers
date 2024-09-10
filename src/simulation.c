@@ -6,11 +6,45 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/10 13:14:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/10 16:38:05 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+/**
+* @brief Main routine for single philosopher thread
+* 
+* This function is used to simulate a single philosopher thread.
+* It waits for the simulation to start, then waits for the simulation
+* to end.
+*
+* @param arg Pointer to the philosopher structure (cast to void*)
+* @return void* Always returns NULL
+*/
+void *single_philo(void *arg)
+{
+	t_philo *philo = (t_philo *)arg;
+	
+	set_long(&philo->data->start_mutex, &philo->data->ready_count, get_long(&philo->data->start_mutex, &philo->data->ready_count) + 1);
+
+	while (!get_bool(&philo->data->start_mutex, &philo->data->start_flag));
+	
+	// Set last_meal_time to the simulation start time
+	
+	set_long(&philo->mutex, &philo->last_meal_time, philo->data->start_time);
+	// usleep(philo->id * 100);
+	print_state_change(philo, "has taken a fork");
+	
+	// Small delay to ensure monitor thread starts checking
+	usleep(1000);
+	// Wait for at least time_to_die duration
+	while (!get_bool(&philo->data->start_mutex, &philo->data->end_simulation))
+	{
+		usleep(50000);
+	}
+	return NULL;
+}
 
 /**
  * @brief Main routine for each philosopher thread
@@ -54,7 +88,7 @@ void *philosopher_routine(void *arg) {
 		
 		
 		// Small delay to prevent busy-waiting
-		usleep(1000);
+		usleep(500);
 	}
 	return NULL;
 }
@@ -77,9 +111,9 @@ static bool	philo_died(t_philo *philo)
 		return (false);
 	
 	elapsed = get_timestamp_in_ms() - philo->data->start_time;
-	elapsed = elapsed - get_long(&philo->mutex, &philo->last_meal_time);
+	if (philo->data->num_philosophers != 1)
+		elapsed = elapsed - get_long(&philo->mutex, &philo->last_meal_time);
 	time_to_die = philo->data->time_to_die;
-	
 	if (elapsed > time_to_die)
 		return (true);
 	return (false);
@@ -97,14 +131,15 @@ static bool	philo_died(t_philo *philo)
 void	*monitor_routine(void *arg)
 {
     t_data *data = (t_data *)arg;
-    int i = 0;
+    int i;
 
 	while (!get_bool(&data->start_mutex, &data->start_flag));
 	
 	while (!get_bool(&data->start_mutex, &data->end_simulation))
     {
+		// printf("monitor\n");
         i = -1;
-		while (++i < data->num_philosophers)
+		while (++i < data->num_philosophers && !get_bool(&data->start_mutex, &data->end_simulation))
 		{
 			if (philo_died(&data->philosophers[i]))
 			{
@@ -113,7 +148,7 @@ void	*monitor_routine(void *arg)
 				return NULL;
 			}
 		}
-        // usleep(5000); // Check every 5ms
+        usleep(1000); // Check every 1ms
     }
     return NULL;
 }

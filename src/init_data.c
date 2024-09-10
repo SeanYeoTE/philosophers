@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:43:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/09 18:17:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/10 16:44:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,8 @@ void create_philosopher_threads(t_data *data)
         perror("Failed to allocate memory for philosophers");
         exit(EXIT_FAILURE);
     }
-
-    
-    while (i < data->num_philosophers) {
+    while (i < data->num_philosophers)
+    {
         philo = &data->philosophers[i];
         philo->id = i;
         philo->last_meal_time = get_timestamp_in_ms();
@@ -60,9 +59,21 @@ void create_philosopher_threads(t_data *data)
         philo->times_eaten = 0;
         philo->full = false;
         pthread_mutex_init(&data->philosophers[i].mutex, NULL);
-        if (pthread_create(&philo->thread, NULL, philosopher_routine, philo) != 0) {
-            perror("Failed to create philosopher thread");
-            exit(EXIT_FAILURE);
+        if (data->num_philosophers == 1)
+        {
+            if (pthread_create(&philo->thread, NULL, single_philo, philo) != 0)
+            {
+                perror("Failed to create philosopher thread");
+                exit(EXIT_FAILURE);
+            }
+        }
+        else
+        {
+            if (pthread_create(&philo->thread, NULL, philosopher_routine, philo) != 0)
+            {
+                perror("Failed to create philosopher thread");
+                exit(EXIT_FAILURE);
+            }
         }
         i++;
     }
@@ -70,6 +81,8 @@ void create_philosopher_threads(t_data *data)
     // Set the start flag to release all threads
     set_long(&data->start_mutex, &data->start_time, get_timestamp_in_ms());
     set_bool(&data->start_mutex, &data->start_flag, true);
+
+    
 }
 
 /**
