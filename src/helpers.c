@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 14:54:07 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/10 12:15:46 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/10 13:17:37 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,9 @@ void	sleep_philo(t_philo *philo)
 /**
  * @brief Simulate a philosopher picking up forks
  * 
- * This function implements the fork picking strategy to avoid deadlocks.
- * It always picks up the lower-numbered fork first.
+ * This function implements the "even-odd" fork picking strategy to avoid deadlocks.
+ * Even-numbered philosophers pick up their right fork first, while odd-numbered
+ * philosophers pick up their left fork first.
  * 
  * @param philo Pointer to the philosopher structure
  */
@@ -106,15 +107,15 @@ void	pick_up_forks(t_philo *philo)
 
 	left_fork = philo->id;
 	right_fork = (philo->id + 1) % philo->data->num_philosophers;
-	if (left_fork < right_fork) {
-		pthread_mutex_lock(&philo->data->forks[left_fork].mutex);
-		print_state_change(philo, "has taken a fork");
+	if (philo->id % 2 == 0) {
 		pthread_mutex_lock(&philo->data->forks[right_fork].mutex);
+		print_state_change(philo, "has taken a fork");
+		pthread_mutex_lock(&philo->data->forks[left_fork].mutex);
 		print_state_change(philo, "has taken a fork");
 	} else {
-		pthread_mutex_lock(&philo->data->forks[right_fork].mutex);
-		print_state_change(philo, "has taken a fork");
 		pthread_mutex_lock(&philo->data->forks[left_fork].mutex);
+		print_state_change(philo, "has taken a fork");
+		pthread_mutex_lock(&philo->data->forks[right_fork].mutex);
 		print_state_change(philo, "has taken a fork");
 	}
 }
@@ -135,4 +136,38 @@ void put_down_forks(t_philo *philo)
 	right_fork = (philo->id + 1) % philo->data->num_philosophers;
 	pthread_mutex_unlock(&philo->data->forks[right_fork].mutex);
 	pthread_mutex_unlock(&philo->data->forks[left_fork].mutex);
+}
+
+/**
+ * @brief Determine the hungriest philosopher among the current philosopher and its two neighbors
+ * 
+ * This function compares the current philosopher with its left and right neighbors
+ * to determine if itself has waited the longest since their last meal.
+ * 
+ * @param data Pointer to the shared data structure
+ * @param current_id The ID of the current philosopher
+ * @return bool true if the current philosopher is the hungriest, false otherwise
+ */
+bool	hungriest_philosopher(t_data *data, int current_id)
+{
+    int left_id = (current_id - 1 + data->num_philosophers) % data->num_philosophers;
+    int right_id = (current_id + 1) % data->num_philosophers;
+    long current_time = get_timestamp_in_ms();
+    long wait_times[3];
+
+    pthread_mutex_lock(&data->philosophers[current_id].mutex);
+    wait_times[0] = current_time - data->philosophers[current_id].last_meal_time;
+    pthread_mutex_unlock(&data->philosophers[current_id].mutex);
+
+    pthread_mutex_lock(&data->philosophers[left_id].mutex);
+    wait_times[1] = current_time - data->philosophers[left_id].last_meal_time;
+    pthread_mutex_unlock(&data->philosophers[left_id].mutex);
+
+    pthread_mutex_lock(&data->philosophers[right_id].mutex);
+    wait_times[2] = current_time - data->philosophers[right_id].last_meal_time;
+    pthread_mutex_unlock(&data->philosophers[right_id].mutex);
+
+    if (wait_times[1] > wait_times[0] && wait_times[2] > wait_times[0])
+        return (false);
+    return (true);
 }

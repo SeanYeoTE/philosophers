@@ -121,6 +121,18 @@ void pick_up_forks(t_philo *philo);
  */
 void put_down_forks(t_philo *philo);
 
+/**
+ * @brief Determine the hungriest philosopher among the current philosopher and its two neighbors
+ * 
+ * This function compares the current philosopher with its left and right neighbors
+ * to determine if itself has waited the longest since their last meal.
+ * 
+ * @param data Pointer to the shared data structure
+ * @param current_id The ID of the current philosopher
+ * @return bool true if the current philosopher is the hungriest, false otherwise
+ */
+bool	hungriest_philosopher(t_data *data, int current_id);
+
 // init_data.c
 /**
  * @brief Initialize forks for the simulation
