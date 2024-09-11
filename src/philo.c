@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:50:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/10 16:46:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/11 12:48:57 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,19 @@ int	initialize_data(t_data *data, int argc, char **argv)
     return 1;
 }
 
+
+
+int validate_data(t_data *data)
+{
+	if (data->num_philosophers <= 0 || data->time_to_die <= 0 ||
+		data->time_to_eat <= 0 || data->time_to_sleep <= 0 ||
+		(data->max_meals != -1 && data->max_meals <= 0))
+	{
+		return 0;
+	}
+	return 1;
+}
+
 /**
  * @brief Main function for the dining philosophers problem
  *
@@ -96,9 +109,9 @@ int	main(int argc, char **argv)
 		printf("Error: Invalid input\n");
 		return (1);
 	}
-	if (data.num_philosophers <= 0)
+	if (!validate_data(&data))
 	{
-		printf("Error: number_of_philosophers must be greater than 0\n");
+		printf("Error: All input values must be greater than 0\n");
 		return (1);
 	}
 	initialize_forks(&data);

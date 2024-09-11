@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/10 16:38:05 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/11 13:17:33 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void *philosopher_routine(void *arg) {
 		
 		
 		// Small delay to prevent busy-waiting
-		usleep(500);
+		// usleep(500);
 	}
 	return NULL;
 }
@@ -148,7 +148,7 @@ void	*monitor_routine(void *arg)
 				return NULL;
 			}
 		}
-        usleep(1000); // Check every 1ms
+        usleep(500); // Check every 1ms
     }
     return NULL;
 }
