@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/12 14:55:09 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/12 16:04:53 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void *philosopher_routine(void *arg) {
 		// if (get_bool(&philo->mutex, &philo->dead))
 		// 	break;
 		// Check if this philosopher is the hungriest
-		else
+		else if (hungriest_philosopher(philo->data, philo->id))
 		{
 			pick_up_forks(philo);
 			timestamp = eat(philo);
