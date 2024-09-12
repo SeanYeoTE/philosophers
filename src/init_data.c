@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:43:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/10 16:44:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/12 13:32:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void    initialize_forks(t_data *data)
     }
     int i = 0;
     while (i < data->num_philosophers) {
+        data->forks[i].last_used = 0;
         pthread_mutex_init(&data->forks[i].mutex, NULL);
         i++;
     }
@@ -58,6 +59,7 @@ void create_philosopher_threads(t_data *data)
         philo->data = data;
         philo->times_eaten = 0;
         philo->full = false;
+        philo->dead = false;
         pthread_mutex_init(&data->philosophers[i].mutex, NULL);
         if (data->num_philosophers == 1)
         {

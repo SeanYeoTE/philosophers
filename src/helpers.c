@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 14:54:07 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/11 13:35:31 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/12 13:38:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	think(t_philo *philo)
  * duration.
  * @param philo Pointer to the philosopher structure
  */
-void	eat(t_philo *philo)
+long	eat(t_philo *philo)
 {
 	long	timestamp;
 
@@ -75,6 +75,7 @@ void	eat(t_philo *philo)
 			&philo->times_eaten) + 1);
 	print_state_change(philo, "is eating");
 	usleep(philo->data->time_to_eat * 1000);
+	return (timestamp);
 }
 
 /**
@@ -127,13 +128,15 @@ void	pick_up_forks(t_philo *philo)
  * 
  * @param philo Pointer to the philosopher structure
  */
-void put_down_forks(t_philo *philo)
+void put_down_forks(t_philo *philo, long timestamp)
 {
 	int left_fork;
 	int right_fork;
 
 	left_fork = philo->id;
 	right_fork = (philo->id + 1) % philo->data->num_philosophers;
+	philo->data->forks[left_fork].last_used = timestamp;
+	philo->data->forks[right_fork].last_used = timestamp;
 	pthread_mutex_unlock(&philo->data->forks[right_fork].mutex);
 	pthread_mutex_unlock(&philo->data->forks[left_fork].mutex);
 }
@@ -150,24 +153,19 @@ void put_down_forks(t_philo *philo)
  */
 bool	hungriest_philosopher(t_data *data, int current_id)
 {
-    int left_id = (current_id - 1 + data->num_philosophers) % data->num_philosophers;
-    int right_id = (current_id + 1) % data->num_philosophers;
-    long current_time = get_timestamp_in_ms();
-    long wait_times[3];
+    int left_fork = current_id;
+    int right_fork = (current_id + 1) % data->num_philosophers;
+	long times[3];
+	
+	times[0] = get_long(&data->philosophers[current_id].mutex, &data->philosophers[current_id].last_meal_time);
 
-    pthread_mutex_lock(&data->philosophers[current_id].mutex);
-    wait_times[0] = current_time - data->philosophers[current_id].last_meal_time;
-    pthread_mutex_unlock(&data->philosophers[current_id].mutex);
 
-    pthread_mutex_lock(&data->philosophers[left_id].mutex);
-    wait_times[1] = current_time - data->philosophers[left_id].last_meal_time;
-    pthread_mutex_unlock(&data->philosophers[left_id].mutex);
+    times[1] = get_long(&data->forks[left_fork].mutex, &data->forks[left_fork].last_used);
+	times[2] = get_long(&data->forks[right_fork].mutex, &data->forks[right_fork].last_used);
 
-    pthread_mutex_lock(&data->philosophers[right_id].mutex);
-    wait_times[2] = current_time - data->philosophers[right_id].last_meal_time;
-    pthread_mutex_unlock(&data->philosophers[right_id].mutex);
 
-    if (wait_times[1] > wait_times[0] && wait_times[2] > wait_times[0])
+
+    if (times[1] > times[0] && times[2] > times[0])
         return (false);
     return (true);
 }

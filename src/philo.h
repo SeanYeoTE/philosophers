@@ -18,6 +18,7 @@ typedef struct s_data t_data;
  * @var mutex Mutex for controlling access to the fork
  */
 typedef struct s_fork {
+	long last_used;
 	pthread_mutex_t mutex;
 } t_fork;
 
@@ -30,6 +31,7 @@ typedef struct s_fork {
  * @var times_eaten Number of times the philosopher has eaten
  * @var last_meal_time Timestamp of the philosopher's last meal
  * @var full Boolean indicating if the philosopher is full
+ * @var dead Boolean indicating if the philosopher has died
  * @var thread Thread handle for the philosopher
  * @var mutex Mutex for controlling access to the philosopher's data
  */
@@ -39,6 +41,7 @@ typedef struct s_philo {
 	long	times_eaten;
 	long	last_meal_time;
 	bool	full;
+	bool	dead;
 	pthread_t thread;
 	pthread_mutex_t mutex;
 } t_philo;
@@ -101,7 +104,7 @@ void think(t_philo *philo);
  * @brief Simulate a philosopher eating
  * @param philo Pointer to the philosopher structure
  */
-void eat(t_philo *philo);
+long eat(t_philo *philo);
 
 /**
  * @brief Simulate a philosopher sleeping
@@ -119,7 +122,7 @@ void pick_up_forks(t_philo *philo);
  * @brief Simulate a philosopher putting down forks
  * @param philo Pointer to the philosopher structure
  */
-void put_down_forks(t_philo *philo);
+void put_down_forks(t_philo *philo, long timestamp);
 
 /**
  * @brief Determine the hungriest philosopher among the current philosopher and its two neighbors
