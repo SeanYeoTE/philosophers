@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 14:54:07 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/12 13:38:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/12 14:47:43 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ bool	hungriest_philosopher(t_data *data, int current_id)
 
 
 
-    if (times[1] > times[0] && times[2] > times[0])
-        return (false);
-    return (true);
+    if (times[1] != times[0] && times[2] != times[0])
+        return (true);
+    return (false);
 }

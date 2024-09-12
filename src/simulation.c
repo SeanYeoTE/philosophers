@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/12 13:29:37 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/12 14:55:09 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,15 @@ void *single_philo(void *arg)
 	return NULL;
 }
 
+void unequal_sleep(t_philo *philo)
+{
+	if (philo->id % 2 == 0)
+		usleep(200);
+	else
+		usleep(0);
+}
+
+	
 /**
  * @brief Main routine for each philosopher thread
  *
@@ -67,14 +76,15 @@ void *philosopher_routine(void *arg) {
 	
 	// Set last_meal_time to the simulation start time
 	set_long(&philo->mutex, &philo->last_meal_time, philo->data->start_time);
-	usleep(philo->id * 100);
+	unequal_sleep(philo);
 	while (!get_bool(&philo->data->start_mutex, &philo->data->end_simulation))
 	{
-		if (get_bool(&philo->mutex, &philo->full) || get_bool(&philo->mutex, &philo->dead))
+		if (get_bool(&philo->mutex, &philo->full))
 			break;
-		
+		// if (get_bool(&philo->mutex, &philo->dead))
+		// 	break;
 		// Check if this philosopher is the hungriest
-		if (hungriest_philosopher(philo->data, philo->id))
+		else
 		{
 			pick_up_forks(philo);
 			timestamp = eat(philo);
