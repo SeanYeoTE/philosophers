@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:43:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/16 16:26:30 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/16 17:32:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,4 +107,5 @@ void destroy_mutexes(t_data *data) {
     free(data->philosophers);
 
     pthread_mutex_destroy(&data->start_mutex);
+    pthread_mutex_destroy(&data->print_lock);
 }

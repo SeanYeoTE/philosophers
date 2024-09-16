@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:50:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/16 16:39:18 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/16 17:32:23 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ int	initialize_data(t_data *data, int argc, char **argv)
 	else if (argc == 5)
 		data->max_meals = -1;
     pthread_mutex_init(&data->start_mutex, NULL);
+	pthread_mutex_init(&data->print_lock, NULL);
     set_bool(&data->start_mutex, &data->end_simulation, false);
     set_long(&data->start_mutex, &data->ready_count, 0);
     set_bool(&data->start_mutex, &data->start_flag, false);
