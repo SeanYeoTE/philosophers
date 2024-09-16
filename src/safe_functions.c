@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:46:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/09 18:17:05 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/16 18:03:07 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
  */
 bool	get_bool(pthread_mutex_t *mutex, bool *value)
 {
-	bool ret;
+	bool	ret;
 
 	pthread_mutex_lock(mutex);
 	ret = *value;
@@ -58,7 +58,7 @@ void	set_bool(pthread_mutex_t *mutex, bool *value, bool new_value)
  */
 long	get_long(pthread_mutex_t *mutex, long *value)
 {
-	long ret;
+	long	ret;
 
 	pthread_mutex_lock(mutex);
 	ret = *value;

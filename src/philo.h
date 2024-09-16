@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/16 18:09:35 by seayeo            #+#    #+#             */
+/*   Updated: 2024/09/16 18:10:13 by seayeo           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -9,7 +21,7 @@
 # include <stdbool.h>
 # include <limits.h>
 
-typedef struct s_data t_data;
+typedef struct s_data	t_data;
 
 /**
  * @struct s_fork
@@ -17,10 +29,11 @@ typedef struct s_data t_data;
  *
  * @var mutex Mutex for controlling access to the fork
  */
-typedef struct s_fork {
-	long last_used;
-	pthread_mutex_t mutex;
-} t_fork;
+typedef struct s_fork
+{
+	long				last_used;
+	pthread_mutex_t		mutex;
+}	t_fork;
 
 /**
  * @struct s_philo
@@ -35,16 +48,17 @@ typedef struct s_fork {
  * @var thread Thread handle for the philosopher
  * @var mutex Mutex for controlling access to the philosopher's data
  */
-typedef struct s_philo {
-	int id;
-	t_data *data;
-	long	times_eaten;
-	long	last_meal_time;
-	bool	full;
-	bool	dead;
-	pthread_t thread;
-	pthread_mutex_t mutex;
-} t_philo;
+typedef struct s_philo
+{
+	int					id;
+	t_data				*data;
+	long				times_eaten;
+	long				last_meal_time;
+	bool				full;
+	bool				dead;
+	pthread_t			thread;
+	pthread_mutex_t		mutex;
+}	t_philo;
 
 /**
  * @struct s_data
@@ -52,6 +66,7 @@ typedef struct s_philo {
  *
  * @var forks Array of forks
  * @var start_mutex Mutex for controlling the start of the simulation
+ * @var print_lock Mutex for controlling access to the print function
  * @var num_philosophers Number of philosophers
  * @var time_to_die Time limit for a philosopher to eat before dying
  * @var time_to_eat Time it takes for a philosopher to eat
@@ -64,22 +79,23 @@ typedef struct s_philo {
  * @var monitor_thread Thread handle for the monitoring thread
  * @var philosophers Array of philosopher structures
  */
-typedef struct s_data {
-	t_fork *forks;
-	pthread_mutex_t start_mutex;
-	pthread_mutex_t print_lock;
-	long num_philosophers;
-	long time_to_die;
-	long time_to_eat;
-	long time_to_sleep;
-	long max_meals;
-	bool	end_simulation;
-	long start_time;
-	long ready_count;
-	bool	start_flag;
-	pthread_t monitor_thread;
-	t_philo *philosophers;
-} t_data;
+typedef struct s_data
+{
+	t_fork				*forks;
+	pthread_mutex_t		start_mutex;
+	pthread_mutex_t		print_lock;
+	long				num_philosophers;
+	long				time_to_die;
+	long				time_to_eat;
+	long				time_to_sleep;
+	long				max_meals;
+	bool				end_simulation;
+	long				start_time;
+	long				ready_count;
+	bool				start_flag;
+	pthread_t			monitor_thread;
+	t_philo				*philosophers;
+}	t_data;
 
 void	error_exit(const char *msg);
 
@@ -88,20 +104,20 @@ void	error_exit(const char *msg);
  * @brief Get the current timestamp in milliseconds
  * @return long Current timestamp in milliseconds
  */
-long get_timestamp_in_ms();
+long	get_timestamp_in_ms(void);
 
 /**
  * @brief Print a state change for a philosopher
  * @param philo Pointer to the philosopher structure
  * @param state String describing the new state
  */
-void print_state_change(t_philo *philo, const char *state);
+void	print_state_change(t_philo *philo, const char *state);
 
 /**
  * @brief Simulate a philosopher thinking
  * @param philo Pointer to the philosopher structure
  */
-void think(t_philo *philo);
+void	think(t_philo *philo);
 
 /**
  * @brief Simulate a philosopher eating
@@ -113,22 +129,24 @@ void	eat(t_philo *philo);
  * @brief Simulate a philosopher sleeping
  * @param philo Pointer to the philosopher structure
  */
-void sleep_philo(t_philo *philo);
+void	sleep_philo(t_philo *philo);
 
+//helpers2.c
 /**
  * @brief Simulate a philosopher picking up forks
  * @param philo Pointer to the philosopher structure
  */
-void pick_up_forks(t_philo *philo);
+void	pick_up_forks(t_philo *philo);
 
 /**
  * @brief Simulate a philosopher putting down forks
  * @param philo Pointer to the philosopher structure
  */
-void put_down_forks(t_philo *philo, long timestamp);
+void	put_down_forks(t_philo *philo, long timestamp);
 
 /**
- * @brief Determine the hungriest philosopher among the current philosopher and its two neighbors
+ * @brief Determine the hungriest philosopher among the current philosopher
+ * and its two neighbors
  * @param data Pointer to the shared data structure
  * @param current_id The ID of the current philosopher
  * @return bool true if the current philosopher is the hungriest, false otherwise
@@ -146,19 +164,19 @@ void	initialize_forks(t_data *data);
  * @brief Create threads for each philosopher
  * @param data Pointer to the shared data structure
  */
-void 	create_philosopher_threads(t_data *data);
+void	create_philosopher_threads(t_data *data);
 
 /**
  * @brief Join all philosopher threads
  * @param data Pointer to the shared data structure
  */
-void join_philosopher_threads(t_data *data);
+void	join_philosopher_threads(t_data *data);
 
 /**
  * @brief Destroy all mutexes used in the simulation
  * @param data Pointer to the shared data structure
  */
-void destroy_mutexes(t_data *data);
+void	destroy_mutexes(t_data *data);
 
 // simulation.c
 /**
@@ -166,21 +184,21 @@ void destroy_mutexes(t_data *data);
 * @param arg Pointer to the philosopher structure (cast to void*)
 * @return void* Always returns NULL
 */
-void *single_philo(void *arg);
+void	*single_philo(void *arg);
 
 /**
  * @brief Main routine for each philosopher thread
  * @param arg Pointer to the philosopher structure
  * @return void* Always returns NULL
  */
-void *philosopher_routine(void *arg);
+void	*philo_routine(void *arg);
 
 /**
  * @brief Routine for the monitor thread
  * @param arg Pointer to the shared data structure
  * @return void* Always returns NULL
  */
-void *monitor_routine(void *arg);
+void	*monitor_routine(void *arg);
 
 // safe_functions.c
 /**
