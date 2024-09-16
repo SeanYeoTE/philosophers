@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/12 16:04:53 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/16 16:52:20 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void *single_philo(void *arg)
 	
 	set_long(&philo->mutex, &philo->last_meal_time, philo->data->start_time);
 	// usleep(philo->id * 100);
-	print_state_change(philo, "has taken a fork");
+	print_state_change(philo, "has taken a fork", philo->dead);
 	
 	// Small delay to ensure monitor thread starts checking
 	usleep(1000);
@@ -68,7 +68,7 @@ void unequal_sleep(t_philo *philo)
  */
 void *philosopher_routine(void *arg) {
 	t_philo *philo = (t_philo *)arg;
-	long	timestamp;
+	// long	timestamp;
 	
 	set_long(&philo->data->start_mutex, &philo->data->ready_count, get_long(&philo->data->start_mutex, &philo->data->ready_count) + 1);
 
@@ -87,8 +87,8 @@ void *philosopher_routine(void *arg) {
 		else if (hungriest_philosopher(philo->data, philo->id))
 		{
 			pick_up_forks(philo);
-			timestamp = eat(philo);
-			put_down_forks(philo, timestamp);
+			// timestamp = eat(philo);
+			// put_down_forks(philo, timestamp);
 			sleep_philo(philo);
 			if (get_long(&philo->mutex, &philo->times_eaten) == philo->data->max_meals && philo->data->max_meals > 0)
 				set_bool(&philo->mutex, &philo->full, true);
@@ -153,9 +153,11 @@ void	*monitor_routine(void *arg)
 		{
 			if (philo_died(&data->philosophers[i]))
 			{
-				print_state_change(&data->philosophers[i], "died");
 				set_bool(&data->philosophers[i].mutex, &data->philosophers[i].dead, true);
 				set_bool(&data->start_mutex, &data->end_simulation, true);
+				print_state_change(&data->philosophers[i], "died", true);
+				
+				
 			
 				return NULL;
 			}

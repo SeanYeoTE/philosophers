@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 14:54:07 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/12 14:47:43 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/16 16:52:11 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,15 @@ long	get_timestamp_in_ms(void)
  * @param philo Pointer to the philosopher structure
  * @param state String describing the new state
  */
-void	print_state_change(t_philo *philo, const char *state)
+void	print_state_change(t_philo *philo, const char *state, bool dead)
 {
 	long	timestamp;
 
 	timestamp = get_timestamp_in_ms() - philo->data->start_time;
-	printf("%ld %d %s\n", timestamp, philo->id + 1, state);
+	if (!get_bool(&philo->data->start_mutex, &philo->data->end_simulation) && !dead)
+		printf("%ld %d %s\n", timestamp, philo->id + 1, state);
+	else if (dead)
+		printf("%ld %d %s\n", timestamp, philo->id + 1, state);
 }
 
 /**
@@ -54,7 +57,7 @@ void	print_state_change(t_philo *philo, const char *state)
  */
 void	think(t_philo *philo)
 {
-	print_state_change(philo, "is thinking");
+	print_state_change(philo, "is thinking", philo->dead);
 }
 
 /**
@@ -65,7 +68,7 @@ void	think(t_philo *philo)
  * duration.
  * @param philo Pointer to the philosopher structure
  */
-long	eat(t_philo *philo)
+void	eat(t_philo *philo)
 {
 	long	timestamp;
 
@@ -73,9 +76,10 @@ long	eat(t_philo *philo)
 	set_long(&philo->mutex, &philo->last_meal_time, timestamp);
 	set_long(&philo->mutex, &philo->times_eaten, get_long(&philo->mutex,
 			&philo->times_eaten) + 1);
-	print_state_change(philo, "is eating");
+	print_state_change(philo, "is eating", philo->dead);
 	usleep(philo->data->time_to_eat * 1000);
-	return (timestamp);
+	// return (timestamp);
+	put_down_forks(philo, timestamp);
 }
 
 /**
@@ -88,7 +92,7 @@ long	eat(t_philo *philo)
  */
 void	sleep_philo(t_philo *philo)
 {
-	print_state_change(philo, "is sleeping");
+	print_state_change(philo, "is sleeping", philo->dead);
 	usleep(philo->data->time_to_sleep * 1000);
 }
 
@@ -110,15 +114,16 @@ void	pick_up_forks(t_philo *philo)
 	right_fork = (philo->id + 1) % philo->data->num_philosophers;
 	if (philo->id % 2 == 0) {
 		pthread_mutex_lock(&philo->data->forks[right_fork].mutex);
-		print_state_change(philo, "has taken a fork");
+		print_state_change(philo, "has taken a fork", philo->dead);
 		pthread_mutex_lock(&philo->data->forks[left_fork].mutex);
-		print_state_change(philo, "has taken a fork");
+		print_state_change(philo, "has taken a fork", philo->dead);
 	} else {
 		pthread_mutex_lock(&philo->data->forks[left_fork].mutex);
-		print_state_change(philo, "has taken a fork");
+		print_state_change(philo, "has taken a fork", philo->dead);
 		pthread_mutex_lock(&philo->data->forks[right_fork].mutex);
-		print_state_change(philo, "has taken a fork");
+		print_state_change(philo, "has taken a fork", philo->dead);
 	}
+	eat(philo);
 }
 
 /**

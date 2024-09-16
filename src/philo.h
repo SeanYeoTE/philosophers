@@ -67,6 +67,7 @@ typedef struct s_philo {
 typedef struct s_data {
 	t_fork *forks;
 	pthread_mutex_t start_mutex;
+	pthread_mutex_t print_lock;
 	long num_philosophers;
 	long time_to_die;
 	long time_to_eat;
@@ -80,6 +81,8 @@ typedef struct s_data {
 	t_philo *philosophers;
 } t_data;
 
+void	error_exit(const char *msg);
+
 // helpers.c
 /**
  * @brief Get the current timestamp in milliseconds
@@ -92,7 +95,7 @@ long get_timestamp_in_ms();
  * @param philo Pointer to the philosopher structure
  * @param state String describing the new state
  */
-void print_state_change(t_philo *philo, const char *state);
+void print_state_change(t_philo *philo, const char *state, bool dead);
 
 /**
  * @brief Simulate a philosopher thinking
@@ -104,7 +107,7 @@ void think(t_philo *philo);
  * @brief Simulate a philosopher eating
  * @param philo Pointer to the philosopher structure
  */
-long eat(t_philo *philo);
+void	eat(t_philo *philo);
 
 /**
  * @brief Simulate a philosopher sleeping

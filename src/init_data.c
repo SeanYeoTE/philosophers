@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:43:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/12 13:32:48 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/16 16:26:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,6 @@ void create_philosopher_threads(t_data *data)
     int i = 0;
     t_philo *philo;
     
-    data->philosophers = malloc(data->num_philosophers * sizeof(t_philo));
-    if (!data->philosophers) {
-        perror("Failed to allocate memory for philosophers");
-        exit(EXIT_FAILURE);
-    }
     while (i < data->num_philosophers)
     {
         philo = &data->philosophers[i];
@@ -64,18 +59,12 @@ void create_philosopher_threads(t_data *data)
         if (data->num_philosophers == 1)
         {
             if (pthread_create(&philo->thread, NULL, single_philo, philo) != 0)
-            {
-                perror("Failed to create philosopher thread");
-                exit(EXIT_FAILURE);
-            }
+                error_exit("Failed to create philosopher thread");
         }
         else
         {
             if (pthread_create(&philo->thread, NULL, philosopher_routine, philo) != 0)
-            {
-                perror("Failed to create philosopher thread");
-                exit(EXIT_FAILURE);
-            }
+                error_exit("Failed to create philosopher thread");
         }
         i++;
     }
@@ -83,8 +72,6 @@ void create_philosopher_threads(t_data *data)
     // Set the start flag to release all threads
     set_long(&data->start_mutex, &data->start_time, get_timestamp_in_ms());
     set_bool(&data->start_mutex, &data->start_flag, true);
-
-    
 }
 
 /**
