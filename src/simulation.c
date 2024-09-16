@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/16 16:52:20 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/16 17:05:05 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void *single_philo(void *arg)
 	
 	set_long(&philo->mutex, &philo->last_meal_time, philo->data->start_time);
 	// usleep(philo->id * 100);
-	print_state_change(philo, "has taken a fork", philo->dead);
+	print_state_change(philo, "has taken a fork");
 	
 	// Small delay to ensure monitor thread starts checking
 	usleep(1000);
@@ -155,7 +155,7 @@ void	*monitor_routine(void *arg)
 			{
 				set_bool(&data->philosophers[i].mutex, &data->philosophers[i].dead, true);
 				set_bool(&data->start_mutex, &data->end_simulation, true);
-				print_state_change(&data->philosophers[i], "died", true);
+				print_state_change(&data->philosophers[i], "died");
 				
 				
 			

@@ -95,7 +95,7 @@ long get_timestamp_in_ms();
  * @param philo Pointer to the philosopher structure
  * @param state String describing the new state
  */
-void print_state_change(t_philo *philo, const char *state, bool dead);
+void print_state_change(t_philo *philo, const char *state);
 
 /**
  * @brief Simulate a philosopher thinking
