@@ -6,11 +6,27 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:43:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 22:26:41 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 22:33:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+/**
+ * @brief Get the current timestamp in milliseconds
+ * 
+ * This function uses gettimeofday to get the current time and converts it
+ * to milliseconds since the Epoch.
+ * 
+ * @return long The current timestamp in milliseconds
+ */
+long	get_timestamp_in_ms(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+}
 
 /**
  * @brief Initialize forks for the simulation
@@ -19,6 +35,7 @@
  *
  * @param data Pointer to the shared data structure
  */
+void	initialize_forks(t_data *data)
 void	initialize_forks(t_data *data)
 {
 	int	i;
@@ -46,6 +63,7 @@ void	initialize_forks(t_data *data)
  *
  * @param data Pointer to the shared data structure
  */
+void	create_philosopher_threads(t_data *data)
 void	create_philosopher_threads(t_data *data)
 {
 	int		i;
@@ -86,6 +104,16 @@ void	create_philosopher_threads(t_data *data)
  *
  * @param data Pointer to the shared data structure
  */
+void	join_philosopher_threads(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->num_philosophers)
+	{
+		pthread_join(data->philosophers[i].thread, NULL);
+		i++;
+	}
 void	join_philosopher_threads(t_data *data)
 {
 	int	i;
