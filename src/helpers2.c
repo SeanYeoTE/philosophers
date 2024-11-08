@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 17:53:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/16 17:57:01 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 22:16:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	put_down_forks(t_philo *philo, long timestamp)
  * and its two neighbors
  * 
  * This function compares the current philosopher with its left and right
- * neighbors to determine if itself has waited the longest since their 
+ * forks to determine if itself has waited the longest since their 
  * last meal.
  * 
  * @param data Pointer to the shared data structure
@@ -95,4 +95,19 @@ bool	hungriest_philosopher(t_data *data, int current_id)
 	if (times[1] != times[0] && times[2] != times[0])
 		return (true);
 	return (false);
+}
+
+/**
+ * @brief Simulate a philosopher sleeping
+ * 
+ * This function prints that the philosopher is sleeping and then sleeps
+ * for the specified sleep duration.
+ * 
+ * @param philo Pointer to the philosopher structure
+ */
+void	sleep_philo(t_philo *philo)
+{
+	// printf("dead: %d\n", philo->dead);
+	print_state_change(philo, "is sleeping");
+	usleep(philo->data->time_to_sleep * 1000);
 }

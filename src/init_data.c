@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:43:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/16 16:26:30 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 22:26:41 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,59 +19,64 @@
  *
  * @param data Pointer to the shared data structure
  */
-void    initialize_forks(t_data *data)
+void	initialize_forks(t_data *data)
 {
-    data->forks = malloc(data->num_philosophers * sizeof(t_fork));
-    if (!data->forks) {
-        perror("Failed to allocate memory for forks");
-        exit(EXIT_FAILURE);
-    }
-    int i = 0;
-    while (i < data->num_philosophers) {
-        data->forks[i].last_used = 0;
-        pthread_mutex_init(&data->forks[i].mutex, NULL);
-        i++;
-    }
+	int	i;
+
+	data->forks = malloc(data->num_philosophers * sizeof(t_fork));
+	if (!data->forks)
+	{
+		perror("Failed to allocate memory for forks");
+		exit(EXIT_FAILURE);
+	}
+	i = 0;
+	while (i < data->num_philosophers)
+	{
+		data->forks[i].last_used = 0;
+		pthread_mutex_init(&data->forks[i].mutex, NULL);
+		i++;
+	}
 }
 
 /**
  * @brief Create threads for each philosopher
  *
- * This function initializes philosopher structures and creates threads for each philosopher.
+ * This function initializes philosopher structures and
+ * creates threads for each philosopher.
  *
  * @param data Pointer to the shared data structure
  */
-void create_philosopher_threads(t_data *data)
+void	create_philosopher_threads(t_data *data)
 {
-    int i = 0;
-    t_philo *philo;
-    
-    while (i < data->num_philosophers)
-    {
-        philo = &data->philosophers[i];
-        philo->id = i;
-        philo->last_meal_time = get_timestamp_in_ms();
-        philo->data = data;
-        philo->times_eaten = 0;
-        philo->full = false;
-        philo->dead = false;
-        pthread_mutex_init(&data->philosophers[i].mutex, NULL);
-        if (data->num_philosophers == 1)
-        {
-            if (pthread_create(&philo->thread, NULL, single_philo, philo) != 0)
-                error_exit("Failed to create philosopher thread");
-        }
-        else
-        {
-            if (pthread_create(&philo->thread, NULL, philosopher_routine, philo) != 0)
-                error_exit("Failed to create philosopher thread");
-        }
-        i++;
-    }
+	int		i;
+	t_philo	*philo;
 
-    // Set the start flag to release all threads
-    set_long(&data->start_mutex, &data->start_time, get_timestamp_in_ms());
-    set_bool(&data->start_mutex, &data->start_flag, true);
+	i = 0;
+	while (i < data->num_philosophers)
+	{
+		philo = &data->philosophers[i];
+		philo->id = i;
+		philo->last_meal_time = get_timestamp_in_ms();
+		philo->data = data;
+		philo->times_eaten = 0;
+		philo->full = false;
+		philo->dead = false;
+		pthread_mutex_init(&data->philosophers[i].mutex, NULL);
+		if (data->num_philosophers == 1)
+		{
+			if (pthread_create(&philo->thread, NULL, single_philo, philo) != 0)
+				error_exit("Failed to create philosopher thread");
+		}
+		else
+		{
+			if (pthread_create(&philo->thread, NULL, philosopher_routine,
+					philo) != 0)
+				error_exit("Failed to create philosopher thread");
+		}
+		i++;
+	}
+	set_long(&data->start_mutex, &data->start_time, get_timestamp_in_ms());
+	set_bool(&data->start_mutex, &data->start_flag, true);
 }
 
 /**
@@ -81,30 +86,38 @@ void create_philosopher_threads(t_data *data)
  *
  * @param data Pointer to the shared data structure
  */
-void join_philosopher_threads(t_data *data) {
-    int i = 0;
-    while (i < data->num_philosophers) {
-        pthread_join(data->philosophers[i].thread, NULL);
-        i++;
-    }
+void	join_philosopher_threads(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->num_philosophers)
+	{
+		pthread_join(data->philosophers[i].thread, NULL);
+		i++;
+	}
 }
 
 /**
  * @brief Destroy all mutexes and free allocated memory
  *
- * This function cleans up resources by destroying mutexes and freeing allocated memory.
+ * This function cleans up resources by destroying mutexes
+ * and freeing allocated memory.
  *
  * @param data Pointer to the shared data structure
  */
-void destroy_mutexes(t_data *data) {
-    int i = 0;
-    while (i < data->num_philosophers) {
-        pthread_mutex_destroy(&data->forks[i].mutex);
-        pthread_mutex_destroy(&data->philosophers[i].mutex);
-        i++;
-    }
-    free(data->forks);
-    free(data->philosophers);
+void	destroy_mutexes(t_data *data)
+{
+	int	i;
 
-    pthread_mutex_destroy(&data->start_mutex);
+	i = 0;
+	while (i < data->num_philosophers)
+	{
+		pthread_mutex_destroy(&data->forks[i].mutex);
+		pthread_mutex_destroy(&data->philosophers[i].mutex);
+		i++;
+	}
+	free(data->forks);
+	free(data->philosophers);
+	pthread_mutex_destroy(&data->start_mutex);
 }

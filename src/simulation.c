@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/16 17:05:05 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 22:27:33 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,15 +140,15 @@ static bool	philo_died(t_philo *philo)
  */
 void	*monitor_routine(void *arg)
 {
-    t_data *data = (t_data *)arg;
-    int i;
+	t_data *data = (t_data *)arg;
+	int i;
 
 	while (!get_bool(&data->start_mutex, &data->start_flag));
 	
 	while (!get_bool(&data->start_mutex, &data->end_simulation))
-    {
+	{
 		// printf("monitor\n");
-        i = -1;
+		i = -1;
 		while (++i < data->num_philosophers && !get_bool(&data->start_mutex, &data->end_simulation))
 		{
 			if (philo_died(&data->philosophers[i]))
@@ -162,7 +162,7 @@ void	*monitor_routine(void *arg)
 				return NULL;
 			}
 		}
-        // usleep(500); // Check every 1ms
-    }
-    return NULL;
+		// usleep(500); // Check every 1ms
+	}
+	return NULL;
 }

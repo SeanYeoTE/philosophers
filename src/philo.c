@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:50:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/16 16:39:18 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 22:27:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,22 +23,22 @@
  */
 int ft_atoi_safe(const char *str, long *result)
 {
-    long n = 0;
-    int sign = 1;
-    
-    if (*str == '-')
-        sign = -1;
-    if (*str == '-' || *str == '+')
-        str++;
-    while (*str && *str >= '0' && *str <= '9')
-    {
-        n = n * 10 + (*str - '0');
-        if (n > INT_MAX || n < INT_MIN)
-            return 0;
-        str++;
-    }
-    *result = (long)(n * sign);
-    return 1;
+	long n = 0;
+	int sign = 1;
+	
+	if (*str == '-')
+		sign = -1;
+	if (*str == '-' || *str == '+')
+		str++;
+	while (*str && *str >= '0' && *str <= '9')
+	{
+		n = n * 10 + (*str - '0');
+		if (n > INT_MAX || n < INT_MIN)
+			return 0;
+		str++;
+	}
+	*result = (long)(n * sign);
+	return 1;
 }
 
 /**
@@ -54,23 +54,23 @@ int ft_atoi_safe(const char *str, long *result)
 int	initialize_data(t_data *data, int argc, char **argv)
 {
 	if (!ft_atoi_safe(argv[1], &data->num_philosophers) ||
-        !ft_atoi_safe(argv[2], &data->time_to_die) ||
-        !ft_atoi_safe(argv[3], &data->time_to_eat) ||
-        !ft_atoi_safe(argv[4], &data->time_to_sleep))
-        return 0;
+		!ft_atoi_safe(argv[2], &data->time_to_die) ||
+		!ft_atoi_safe(argv[3], &data->time_to_eat) ||
+		!ft_atoi_safe(argv[4], &data->time_to_sleep))
+		return 0;
 	if (argc == 6 && !ft_atoi_safe(argv[5], &data->max_meals))
-        return 0;
+		return 0;
 	else if (argc == 5)
 		data->max_meals = -1;
-    pthread_mutex_init(&data->start_mutex, NULL);
-    set_bool(&data->start_mutex, &data->end_simulation, false);
-    set_long(&data->start_mutex, &data->ready_count, 0);
-    set_bool(&data->start_mutex, &data->start_flag, false);
+	pthread_mutex_init(&data->start_mutex, NULL);
+	set_bool(&data->start_mutex, &data->end_simulation, false);
+	set_long(&data->start_mutex, &data->ready_count, 0);
+	set_bool(&data->start_mutex, &data->start_flag, false);
 	data->philosophers = malloc(data->num_philosophers * sizeof(t_philo));
-    if (!data->philosophers)
+	if (!data->philosophers)
 		error_exit("Failed to allocate memory for philosophers");
 		
-    return 1;
+	return 1;
 }
 
 int validate_data(t_data *data)
@@ -115,7 +115,7 @@ int	main(int argc, char **argv)
 	initialize_forks(&data);
 
 	pthread_t monitor_thread;
-    pthread_create(&monitor_thread, NULL, monitor_routine, &data);
+	pthread_create(&monitor_thread, NULL, monitor_routine, &data);
 	
 	create_philosopher_threads(&data);
 
