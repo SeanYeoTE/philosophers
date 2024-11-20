@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:43:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 20:33:15 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/20 14:51:53 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@ void	initialize_forks(t_data *data)
 {
 	int	i;
 
-	data->forks = malloc(data->num_philosophers * sizeof(t_fork));
+	data->forks = malloc(data->num_philos * sizeof(t_fork));
 	if (!data->forks)
 	{
 		printf("Failed to allocate memory for forks");
 		return ;
 	}
 	i = 0;
-	while (i < data->num_philosophers)
+	while (i < data->num_philos)
 	{
 		data->forks[i].last_used = 0;
 		pthread_mutex_init(&data->forks[i].mutex, NULL);
@@ -61,21 +61,20 @@ void	create_philosopher_threads(t_data *data)
 	t_philo	*philo;
 
 	i = 0;
-	while (i < data->num_philosophers)
+	while (i < data->num_philos)
 	{
-		philo = &data->philosophers[i];
+		philo = &data->philos[i];
+		pthread_mutex_init(&data->philos[i].mutex, NULL);
 		philo->data = data;
 		init_data(philo, i);
-		pthread_mutex_init(&data->philosophers[i].mutex, NULL);
-		if (data->num_philosophers == 1)
+		if (data->num_philos == 1)
 		{
 			if (thread_creation(&philo->thread, single_philo, philo) == 0)
 				return ;
 		}
 		else
 		{
-			if (thread_creation(&philo->thread, philosopher_routine,
-					philo) == 0)
+			if (thread_creation(&philo->thread, normal_routine, philo) == 0)
 				return ;
 		}
 		i++;
@@ -96,9 +95,9 @@ void	join_philosopher_threads(t_data *data)
 	int	i;
 
 	i = 0;
-	while (i < data->num_philosophers)
+	while (i < data->num_philos)
 	{
-		pthread_join(data->philosophers[i].thread, NULL);
+		pthread_join(data->philos[i].thread, NULL);
 		i++;
 	}
 }
@@ -116,14 +115,14 @@ void	destroy_mutexes(t_data *data)
 	int	i;
 
 	i = 0;
-	while (i < data->num_philosophers)
+	while (i < data->num_philos)
 	{
 		pthread_mutex_destroy(&data->forks[i].mutex);
-		pthread_mutex_destroy(&data->philosophers[i].mutex);
+		pthread_mutex_destroy(&data->philos[i].mutex);
 		i++;
 	}
 	free(data->forks);
-	free(data->philosophers);
+	free(data->philos);
 	pthread_mutex_destroy(&data->start_mutex);
 	pthread_mutex_destroy(&data->print_lock);
 }

@@ -1,24 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   thread_creation.c                                  :+:      :+:    :+:   */
+/*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/11 20:33:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 20:33:52 by seayeo           ###   ########.fr       */
+/*   Created: 2024/11/20 14:34:03 by seayeo            #+#    #+#             */
+/*   Updated: 2024/11/20 14:45:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	thread_creation(pthread_t *thread,
-	void *(*start_routine)(void *), void *arg)
+void	spinlock(pthread_mutex_t *mutex, bool *flag)
 {
-	if (pthread_create(thread, NULL, start_routine, arg) != 0)
-	{
-		printf("Failed to create philosopher thread");
-		return (0);
-	}
-	return (1);
+	while (!get_bool(mutex, flag))
+		;
 }

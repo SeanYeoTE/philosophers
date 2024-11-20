@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 21:05:13 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/18 19:24:53 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/20 14:51:19 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ typedef struct s_data
 	t_fork			*forks;
 	pthread_mutex_t	start_mutex;
 	pthread_mutex_t	print_lock;
-	long			num_philosophers;
+	long			num_philos;
 	long			time_to_die;
 	long			time_to_eat;
 	long			time_to_sleep;
@@ -91,7 +91,7 @@ typedef struct s_data
 	long			start_time;
 	bool			start_flag;
 	pthread_t		monitor_thread;
-	t_philo			*philosophers;
+	t_philo			*philos;
 }	t_data;
 
 void	initialize_forks(t_data *data);
@@ -108,7 +108,7 @@ void	put_down_forks(t_philo *philo, long timestamp);
 bool	hungriest_philosopher(t_data *data, int current_id);
 
 // philo_status.c
-void	eat(t_philo *philo);
+void	eat(t_philo *philo, long prev_timestamp);
 void	sleep_philo(t_philo *philo);
 void	think(t_philo *philo);
 
@@ -116,12 +116,15 @@ void	think(t_philo *philo);
 int		ft_strcmp(const char *s1, const char *s2);
 void	unequal_sleep(t_philo *philo);
 long	get_timestamp_in_ms(void);
-void	print_state_change(t_philo *philo, const char *state);
+void	print_state_change(t_philo *philo, const char *state, long timestamp);
 int		ft_atoi_safe(const char *str, long *result);
+
+// utils2.c
+void	spinlock(pthread_mutex_t *mutex, bool *flag);
 
 // simulation.c
 void	*single_philo(void *arg);
-void	*philosopher_routine(void *arg);
+void	*normal_routine(void *arg);
 void	*monitor_routine(void *arg);
 
 // getandset.c

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 14:54:07 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 19:57:52 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/20 14:47:52 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,17 @@
  * duration.
  * @param philo Pointer to the philosopher structure
  */
-void	eat(t_philo *philo)
+void	eat(t_philo *philo, long prev_timestamp)
 {
 	long	timestamp;
 
 	timestamp = get_timestamp_in_ms() - philo->data->start_time;
+	print_state_change(philo, "is eating", timestamp);
 	set_long(&philo->mutex, &philo->last_meal_time, timestamp);
 	set_long(&philo->mutex, &philo->times_eaten, get_long(&philo->mutex,
 			&philo->times_eaten) + 1);
-	print_state_change(philo, "is eating");
-	usleep(philo->data->time_to_eat * 1000);
-	put_down_forks(philo, timestamp);
+	usleep((philo->data->time_to_eat * 1000) - prev_timestamp);
+	put_down_forks(philo, prev_timestamp);
 }
 
 /**
@@ -43,8 +43,15 @@ void	eat(t_philo *philo)
  */
 void	sleep_philo(t_philo *philo)
 {
-	print_state_change(philo, "is sleeping");
-	usleep(philo->data->time_to_sleep * 1000);
+	long	timestamp;
+	long	elapsed;
+
+	timestamp = get_timestamp_in_ms() - philo->data->start_time;
+	printf("timestamp: %ld\n", timestamp);
+	print_state_change(philo, "is sleeping", timestamp);
+	elapsed = get_timestamp_in_ms() - timestamp;
+	printf("elapsed: %ld\n", elapsed - philo->data->start_time);
+	usleep((philo->data->time_to_sleep * 1000) - elapsed);
 }
 
 /**
@@ -57,5 +64,8 @@ void	sleep_philo(t_philo *philo)
  */
 void	think(t_philo *philo)
 {
-	print_state_change(philo, "is thinking");
+	long	timestamp;
+
+	timestamp = get_timestamp_in_ms() - philo->data->start_time;
+	print_state_change(philo, "is thinking", timestamp);
 }

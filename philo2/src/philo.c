@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 12:50:24 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/18 19:36:00 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/20 14:44:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	arg_checks(t_data *data, char **argv)
 {
-	if (ft_atoi_safe(argv[1], &data->num_philosophers) == 0)
+	if (ft_atoi_safe(argv[1], &data->num_philos) == 0)
 		return (0);
 	if (ft_atoi_safe(argv[2], &data->time_to_die) == 0)
 		return (0);
@@ -38,8 +38,8 @@ int	arg_checks(t_data *data, char **argv)
  */
 int	initialize_data(t_data *data)
 {
-	data->philosophers = malloc(data->num_philosophers * sizeof(t_philo));
-	if (!data->philosophers)
+	data->philos = malloc(data->num_philos * sizeof(t_philo));
+	if (!data->philos)
 		return (0);
 	pthread_mutex_init(&data->start_mutex, NULL);
 	pthread_mutex_init(&data->print_lock, NULL);
@@ -50,17 +50,15 @@ int	initialize_data(t_data *data)
 
 int	validate_data(t_data *data, int argc, char **argv)
 {
+	if (argc < 5 || argc > 6)
+		return (0);
 	if (arg_checks(data, argv) == 0)
 		return (0);
 	if (argc == 6 && !ft_atoi_safe(argv[5], &data->max_meals))
 		return (0);
 	if (argc == 5)
 		data->max_meals = -1;
-	if (argc < 5 || argc > 6)
-	{
-		return (0);
-	}
-	if (data->num_philosophers <= 0 || data->time_to_die <= 0
+	if (data->num_philos <= 0 || data->time_to_die <= 0
 		|| data->time_to_eat <= 0 || data->time_to_sleep <= 0
 		|| (data->max_meals != -1 && data->max_meals <= 0))
 		return (0);

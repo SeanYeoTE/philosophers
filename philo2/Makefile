@@ -6,7 +6,7 @@
 #    By: seayeo <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 13:42:23 by seayeo            #+#    #+#              #
-#    Updated: 2024/11/11 20:37:26 by seayeo           ###   ########.fr        #
+#    Updated: 2024/11/20 14:41:22 by seayeo           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ SRC = 	philo.c \
 		simulation.c \
 		getandset.c \
 		utils.c \
+		utils2.c \
 		thread_creation.c
 		
 SRCS = $(addprefix $(SRC_PATH), $(SRC))

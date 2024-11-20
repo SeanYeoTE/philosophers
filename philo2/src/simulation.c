@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/18 19:24:41 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/20 14:51:03 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,13 @@
 void	*single_philo(void *arg)
 {
 	t_philo	*philo;
+	long	timestamp;
 
 	philo = (t_philo *)arg;
-	while (!get_bool(&philo->data->start_mutex, &philo->data->start_flag))
-		;
+	timestamp = get_timestamp_in_ms() - philo->data->start_time;
+	spinlock(&philo->data->start_mutex, &philo->data->start_flag);
 	set_long(&philo->mutex, &philo->last_meal_time, philo->data->start_time);
-	print_state_change(philo, "has taken a fork");
+	print_state_change(philo, "has taken a fork", timestamp);
 	usleep(1000);
 	while (!get_bool(&philo->data->start_mutex, &philo->data->end_simulation))
 	{
@@ -50,13 +51,12 @@ void	*single_philo(void *arg)
  * @param arg Pointer to the philosopher structure (cast to void*)
  * @return void* Always returns NULL
  */
-void	*philosopher_routine(void *arg)
+void	*normal_routine(void *arg)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	while (!get_bool(&philo->data->start_mutex, &philo->data->start_flag))
-		;
+	spinlock(&philo->data->start_mutex, &philo->data->start_flag);
 	set_long(&philo->mutex, &philo->last_meal_time, philo->data->start_time);
 	unequal_sleep(philo);
 	while (!get_bool(&philo->data->start_mutex, &philo->data->end_simulation))
@@ -93,7 +93,7 @@ static bool	philo_died(t_philo *philo)
 	if (get_bool(&philo->mutex, &philo->full))
 		return (false);
 	elapsed = get_timestamp_in_ms() - philo->data->start_time;
-	if (philo->data->num_philosophers != 1)
+	if (philo->data->num_philos != 1)
 		elapsed = elapsed - get_long(&philo->mutex, &philo->last_meal_time);
 	time_to_die = philo->data->time_to_die;
 	if (elapsed > time_to_die)
@@ -114,22 +114,22 @@ void	*monitor_routine(void *arg)
 {
 	t_data	*data;
 	int		i;
+	long	timestamp;
 
 	data = (t_data *)arg;
-	while (!get_bool(&data->start_mutex, &data->start_flag))
-		;
+	spinlock(&data->start_mutex, &data->start_flag);
 	while (!get_bool(&data->start_mutex, &data->end_simulation))
 	{
 		i = -1;
-		while (++i < data->num_philosophers && !get_bool(&data->start_mutex,
+		while (++i < data->num_philos && !get_bool(&data->start_mutex,
 				&data->end_simulation))
 		{
-			if (philo_died(&data->philosophers[i]))
+			if (philo_died(&data->philos[i]))
 			{
-				set_bool(&data->philosophers[i].mutex,
-					&data->philosophers[i].dead, true);
+				timestamp = get_timestamp_in_ms() - data->start_time;
+				set_bool(&data->philos[i].mutex, &data->philos[i].dead, true);
 				set_bool(&data->start_mutex, &data->end_simulation, true);
-				print_state_change(&data->philosophers[i], "died");
+				print_state_change(&data->philos[i], "died", timestamp);
 				return (NULL);
 			}
 		}

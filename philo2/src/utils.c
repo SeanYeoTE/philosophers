@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:04:48 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 20:34:32 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/20 14:46:08 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,11 @@ long	get_timestamp_in_ms(void)
  * @param philo Pointer to the philosopher structure
  * @param state String describing the new state
  */
-void	print_state_change(t_philo *philo, const char *state)
+void	print_state_change(t_philo *philo, const char *state, long timestamp)
 {
-	long	timestamp;
+	// long	currtimestamp;
 
-	timestamp = get_timestamp_in_ms() - philo->data->start_time;
+	// currtimestamp = get_timestamp_in_ms() - philo->data->start_time;
 	pthread_mutex_lock(&philo->data->print_lock);
 	if (!get_bool(&philo->data->start_mutex, &philo->data->end_simulation))
 		printf("%ld %d %s\n", timestamp, philo->id + 1, state);
