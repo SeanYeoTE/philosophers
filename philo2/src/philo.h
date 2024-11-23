@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 21:05:13 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/20 14:51:19 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/23 18:36:09 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ bool	hungriest_philosopher(t_data *data, int current_id);
 
 // philo_status.c
 void	eat(t_philo *philo, long prev_timestamp);
-void	sleep_philo(t_philo *philo);
+void	sleep_philo(t_philo *philo, long prev_timestamp);
 void	think(t_philo *philo);
 
 // utils.c
