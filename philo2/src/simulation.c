@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 13:18:26 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/23 18:36:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/24 01:49:29 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 * @return void* Always returns NULL
 */
 void	*single_philo(void *arg)
+void	*single_philo(void *arg)
 {
 	t_philo	*philo;
 	long	timestamp;
@@ -34,11 +35,11 @@ void	*single_philo(void *arg)
 	print_state_change(philo, "has taken a fork", timestamp);
 	usleep(1000);
 	while (!get_bool(&philo->data->start_mutex, &philo->data->end_simulation))
-	{
 		usleep(50000);
 	}
 	return (NULL);
 }
+
 
 /**
  * @brief Main routine for each philosopher thread
@@ -63,6 +64,7 @@ void	*normal_routine(void *arg)
 	{
 		if (get_bool(&philo->mutex, &philo->full))
 			break ;
+			break ;
 		else if (hungriest_philosopher(philo->data, philo->id))
 		{
 			pick_up_forks(philo);
@@ -73,6 +75,7 @@ void	*normal_routine(void *arg)
 			think(philo);
 		}
 	}
+	return (NULL);
 	return (NULL);
 }
 
@@ -87,6 +90,7 @@ void	*normal_routine(void *arg)
  */
 static bool	philo_died(t_philo *philo)
 {
+	long	elapsed;
 	long	elapsed;
 	long	time_to_die;
 
