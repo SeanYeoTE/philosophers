@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   safe_functions.c                                   :+:      :+:    :+:   */
+/*   getandset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:46:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 22:33:18 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/24 01:49:11 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
  */
 bool	get_bool(pthread_mutex_t *mutex, bool *value)
 {
-	bool	ret;
 	bool	ret;
 
 	pthread_mutex_lock(mutex);
@@ -60,7 +59,6 @@ void	set_bool(pthread_mutex_t *mutex, bool *value, bool new_value)
 long	get_long(pthread_mutex_t *mutex, long *value)
 {
 	long	ret;
-	long	ret;
 
 	pthread_mutex_lock(mutex);
 	ret = *value;
@@ -83,4 +81,3 @@ void	set_long(pthread_mutex_t *mutex, long *value, long new_value)
 	*value = new_value;
 	pthread_mutex_unlock(mutex);
 }
-

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helpers2.c                                         :+:      :+:    :+:   */
+/*   forks_status.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 17:53:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 22:16:30 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/24 01:48:11 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,26 +24,28 @@
  */
 void	pick_up_forks(t_philo *philo)
 {
-	int	left_fork;
-	int	right_fork;
+	int		left_fork;
+	int		right_fork;
+	long	timestamp;
 
 	left_fork = philo->id;
-	right_fork = (philo->id + 1) % philo->data->num_philosophers;
-	if (philo->id % 2 == 0)
-	{
-		pthread_mutex_lock(&philo->data->forks[right_fork].mutex);
-		print_state_change(philo, "has taken a fork");
-		pthread_mutex_lock(&philo->data->forks[left_fork].mutex);
-		print_state_change(philo, "has taken a fork");
-	}
-	else
-	{
-		pthread_mutex_lock(&philo->data->forks[left_fork].mutex);
-		print_state_change(philo, "has taken a fork");
-		pthread_mutex_lock(&philo->data->forks[right_fork].mutex);
-		print_state_change(philo, "has taken a fork");
-	}
-	eat(philo);
+	right_fork = (philo->id + 1) % philo->data->num_philos;
+	timestamp = get_timestamp_in_ms() - philo->data->start_time;
+	// if (philo->id % 2 == 0)
+	// {
+	pthread_mutex_lock(&philo->data->forks[right_fork].mutex);
+	print_state_change(philo, "has taken a fork", timestamp);
+	pthread_mutex_lock(&philo->data->forks[left_fork].mutex);
+	print_state_change(philo, "has taken a fork", timestamp);
+	// }
+	// else
+	// {
+	// 	pthread_mutex_lock(&philo->data->forks[left_fork].mutex);
+	// 	print_state_change(philo, "has taken a fork", timestamp);
+	// 	pthread_mutex_lock(&philo->data->forks[right_fork].mutex);
+	// 	print_state_change(philo, "has taken a fork", timestamp);
+	// }
+	eat(philo, timestamp);
 }
 
 /**
@@ -59,7 +61,7 @@ void	put_down_forks(t_philo *philo, long timestamp)
 	int	right_fork;
 
 	left_fork = philo->id;
-	right_fork = (philo->id + 1) % philo->data->num_philosophers;
+	right_fork = (philo->id + 1) % philo->data->num_philos;
 	philo->data->forks[left_fork].last_used = timestamp;
 	philo->data->forks[right_fork].last_used = timestamp;
 	pthread_mutex_unlock(&philo->data->forks[right_fork].mutex);
@@ -85,9 +87,9 @@ bool	hungriest_philosopher(t_data *data, int current_id)
 	long	times[3];
 
 	left_fork = current_id;
-	right_fork = (current_id + 1) % data->num_philosophers;
-	times[0] = get_long(&data->philosophers[current_id].mutex,
-			&data->philosophers[current_id].last_meal_time);
+	right_fork = (current_id + 1) % data->num_philos;
+	times[0] = get_long(&data->philos[current_id].mutex,
+			&data->philos[current_id].last_meal_time);
 	times[1] = get_long(&data->forks[left_fork].mutex,
 			&data->forks[left_fork].last_used);
 	times[2] = get_long(&data->forks[right_fork].mutex,
