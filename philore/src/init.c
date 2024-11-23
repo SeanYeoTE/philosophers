@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 19:44:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/23 21:44:29 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/23 23:13:02 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,13 @@ int	init_threads(t_table *table)
 		table->philos[i].id = i;
 		table->philos[i].meals = 0;
 		table->philos[i].last_meal = 0;
+		table->philos[i].full = false;
 		table->philos[i].table = table;
 		i++;
 	}
 	assign_forks(table);
 	pthread_mutex_init(&table->print, NULL);
-	table->start_time = get_time();
+	table->start_time = get_time(1);
 	return (0);
 }
 
@@ -62,11 +63,10 @@ int	assign_forks(t_table *table)
 	while (i < table->num_philos)
 	{
 		if (i == 0)
-			table->philos[i].left_fork
-				= &table->forks[table->num_philos - 1].mutex;
+			table->philos[i].left_fork= &table->forks[table->num_philos - 1];
 		else
-			table->philos[i].left_fork = &table->forks[i - 1].mutex;
-		table->philos[i].right_fork = &table->forks[i].mutex;
+			table->philos[i].left_fork = &table->forks[i - 1];
+		table->philos[i].right_fork = &table->forks[i];
 		i++;
 	}
 	return (0);
@@ -75,9 +75,11 @@ int	assign_forks(t_table *table)
 int init_others(t_table *table)
 {
 	pthread_mutex_init(&table->table_data, NULL);
-	table->start_flag = false;
 	table->time_to_die = table->time_to_die * 1000;
 	table->time_to_eat = table->time_to_eat * 1000;
 	table->time_to_sleep = table->time_to_sleep * 1000;
+	table->start_flag = false;
+	table->dead = false;
+	table->end_sim = false;
 	return (0);
 }

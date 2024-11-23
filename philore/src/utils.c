@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 19:09:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/23 21:45:31 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/23 23:57:52 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	spinlock(bool *start_flag, pthread_mutex_t *table_data)
 {
-	while (get_bool(table_data, start_flag))
+	while (!get_bool(table_data, start_flag))
 		;
 }
 
@@ -42,7 +42,7 @@ int	ft_atol_assign(const char *str, long *num)
 		str++;
 	}
 	res = res * sign;
-	if (res < INTMIN | res > INTMAX)
+	if (res < INT_MIN || res > INT_MAX)
 		return (1);
 	*num = res;
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:45:09 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/23 21:59:11 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/23 23:05:32 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,10 @@ void	desync_start(long id)
 		usleep(100);
 }
 
-void	precise_sleep(long time, long current_time, long prev_timestamp)
+void	precise_sleep(t_philo *philo, long time, long prev_timestamp)
 {
+	long	currtime;
+
 	currtime = get_time(1) - philo->table->start_time;
 	while (currtime - prev_timestamp < time)
 	{
@@ -31,6 +33,7 @@ void	precise_sleep(long time, long current_time, long prev_timestamp)
 void	print_state_change(t_philo *philo, char *state, long timestamp)
 {
 	pthread_mutex_lock(&philo->table->print);
+	timestamp = timestamp / 1000;
 	if (get_bool(&philo->table->table_data, &philo->table->end_sim))
 		printf("%ld %ld %s\n", timestamp, philo->id + 1, state);
 	else if (get_bool(&philo->table->table_data, &philo->table->dead))
