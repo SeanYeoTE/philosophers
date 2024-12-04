@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 19:44:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/04 13:48:19 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/04 14:04:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ int init_others(t_table *table)
 {
 	pthread_mutex_init(&table->table_data, NULL);
 	pthread_mutex_init(&table->print, NULL);
-	printf("init others\n");
 	table->time_to_die = table->time_to_die * 1000;
 	table->time_to_eat = table->time_to_eat * 1000;
 	table->time_to_sleep = table->time_to_sleep * 1000;

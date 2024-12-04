@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 18:42:52 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/23 23:56:06 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/04 14:14:19 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void				*monitor(void *arg);
 // philo_status.c
 void				pick_fork(t_philo *philo);
 void				philo_eat(t_philo *philo, long prev_timestamp);
-void				put_down_forks(t_philo *philo, long prev_timestamp);
+void				put_down_forks(t_philo *philo);
 void				philo_sleep(t_philo *philo, long prev_timestamp);
 void				philo_think(t_philo *philo, long prev_timestamp);
 
