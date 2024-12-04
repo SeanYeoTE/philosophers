@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 18:42:52 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/04 14:14:19 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/04 16:02:52 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct s_philo
 	long			meals;
 	long			last_meal;
 	bool			full;
+	bool			dead;
 	pthread_t		thread;
 	t_fork			*left_fork;
 	t_fork			*right_fork;
@@ -50,7 +51,6 @@ typedef struct s_table
 	long			num_meals;
 	long			start_time;
 	bool			start_flag;
-	bool			dead;
 	bool			end_sim;
 	t_fork			*forks;
 	pthread_t		monitor_thread;

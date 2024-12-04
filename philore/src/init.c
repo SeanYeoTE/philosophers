@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 19:44:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/04 14:04:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/04 16:10:42 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ static void	init_data(t_philo *philo, int i)
 	philo->meals = 0;
 	philo->last_meal = get_time(1);
 	philo->full = false;
+	philo->dead = false;
 }
 
 int	init_threads(t_table *table)
@@ -74,6 +75,8 @@ int	assign_forks(t_table *table)
 	long	i;
 
 	i = 0;
+	if (table->num_philos == 1)
+		return (0);
 	while (i < table->num_philos)
 	{
 		if (i == 0)
@@ -94,7 +97,6 @@ int init_others(t_table *table)
 	table->time_to_eat = table->time_to_eat * 1000;
 	table->time_to_sleep = table->time_to_sleep * 1000;
 	table->start_flag = false;
-	table->dead = false;
 	table->end_sim = false;
 	return (0);
 }
