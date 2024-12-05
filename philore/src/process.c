@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 19:53:14 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/04 17:02:52 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/05 17:54:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,12 @@ void	*philo_life(void *arg)
 			break ;
 		else if (hungriest_philo(philo))
 		{
-			pick_fork(philo);
-			philo_sleep(philo, get_time(1));
+			pick_fork(philo, get_time(1));
+			if (get_bool(&philo->mutex, &philo->full))
+				break ;
 		}
 	}
+	// printf("%ld philo is done\n", philo->id + 1);
 	return (NULL);
 }
 
@@ -59,7 +61,10 @@ void	*solo(void *arg)
 	time = get_time(1) - philo->table->start_time;
 	print_state_change(philo, "has taken a fork", time);
 	while (!get_bool(&philo->table->table_data, &philo->table->end_sim))
+	{
 		usleep(50000);
+		printf("philo %ld is thinking\n", philo->id + 1);
+	}
 	return (NULL);
 }
 
@@ -89,7 +94,8 @@ void	*monitor(void *arg)
 	while (!get_bool(&table->table_data, &table->end_sim))
 	{
 		i = 0;
-		while (i < table->num_philos)
+		while (++i < table->num_philos &&
+			!get_bool(&table->table_data, &table->end_sim))
 		{
 			time = get_time(1) - table->start_time;
 			if (is_philo_dead(&table->philos[i]))
@@ -99,8 +105,8 @@ void	*monitor(void *arg)
 				print_state_change(&table->philos[i], "died", time);
 				return (NULL);
 			}
-			i++;
 		}
+		// usleep(table->interval);
 	}
 	return (NULL);
 }

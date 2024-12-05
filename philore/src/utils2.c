@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:45:09 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/04 16:08:38 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/05 17:52:07 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,30 @@ void	desync_start(long id)
 		usleep(100);
 }
 
+long	get_min_interval(long a, long b, long c)
+{
+	long	min;
+
+	min = a;
+	if (b < min)
+		min = b;
+	if (c < min)
+		min = c;
+	min = 100;
+	// printf("min: %ld\n", min);
+	return (min);
+}
+
 void	precise_sleep(t_philo *philo, long time, long prev_timestamp)
 {
-	long	currtime;
+	long endingtime;
 
-	currtime = get_time(1) - philo->table->start_time;
-	while (currtime - (prev_timestamp - philo->table->start_time) < time)
+	endingtime = prev_timestamp + time;
+	while (get_time(1) < endingtime)
 	{
-		usleep(60);
-		currtime = get_time(1) - philo->table->start_time;
+		// if (get_bool(&philo->table->table_data, &philo->table->end_sim))
+		// 	break ;
+		usleep(philo->table->interval);
 	}
 }
 int	ft_strcmp(const char *s1, const char *s2)
@@ -43,9 +58,15 @@ void	print_state_change(t_philo *philo, char *state, long timestamp)
 {
 	pthread_mutex_lock(&philo->table->print);
 	timestamp = timestamp / 1000;
+	// printf("am i coming here!!!!!\n");
 	if (!get_bool(&philo->table->table_data, &philo->table->end_sim))
 		printf("%ld %ld %s\n", timestamp, philo->id + 1, state);
+	
 	else if (ft_strcmp(state, "died") == 0 && get_bool(&philo->mutex, &philo->dead))
-		printf("%ld %ld %s\n", timestamp, philo->id + 1, "died");
+	{
+		// printf("am i coming here\n");
+		// if (!get_bool(&philo->mutex, &philo->full))
+		printf("%ld %ld %s\n", timestamp, philo->id + 1, state);
+	}
 	pthread_mutex_unlock(&philo->table->print);
 }

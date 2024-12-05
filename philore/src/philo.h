@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 18:42:52 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/04 16:02:52 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/05 15:54:13 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef struct s_table
 	long			time_to_sleep;
 	long			num_meals;
 	long			start_time;
+	long			interval;
 	bool			start_flag;
 	bool			end_sim;
 	t_fork			*forks;
@@ -68,6 +69,7 @@ int					init_threads(t_table *table);
 int					assign_forks(t_table *table);
 int					init_others(t_table *table);
 
+
 // utils.c
 void				spinlock(bool *start_flag, pthread_mutex_t *table_data);
 void				errormsg(char *s);
@@ -79,6 +81,7 @@ int					thread_creation(pthread_t *thread,
 void				desync_start(long id);
 void				precise_sleep(t_philo *philo, long time, long prev_timestamp);
 void				print_state_change(t_philo *philo, char *state, long timestamp);
+long				get_min_interval(long a, long b, long c);
 		
 // getandset.c
 long				get_time(int type);
@@ -94,9 +97,9 @@ int					is_philo_dead(t_philo *philo);
 void				*monitor(void *arg);
 
 // philo_status.c
-void				pick_fork(t_philo *philo);
+void				pick_fork(t_philo *philo, long prev_timestamp);
 void				philo_eat(t_philo *philo, long prev_timestamp);
-void				put_down_forks(t_philo *philo);
+void				put_down_forks(t_philo *philo, long prev_timestamp);
 void				philo_sleep(t_philo *philo, long prev_timestamp);
 void				philo_think(t_philo *philo, long prev_timestamp);
 

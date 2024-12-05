@@ -6,11 +6,13 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 19:44:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/04 16:10:42 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/05 14:06:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+
 
 int	init_forks(t_table *table)
 {
@@ -88,14 +90,17 @@ int	assign_forks(t_table *table)
 	}
 	return (0);
 }
+
 // set to die, eat, sleep to microseconds
-int init_others(t_table *table)
+int	init_others(t_table *table)
 {
 	pthread_mutex_init(&table->table_data, NULL);
 	pthread_mutex_init(&table->print, NULL);
 	table->time_to_die = table->time_to_die * 1000;
 	table->time_to_eat = table->time_to_eat * 1000;
 	table->time_to_sleep = table->time_to_sleep * 1000;
+	table->interval = get_min_interval(table->time_to_die,
+			table->time_to_eat, table->time_to_sleep);
 	table->start_flag = false;
 	table->end_sim = false;
 	return (0);

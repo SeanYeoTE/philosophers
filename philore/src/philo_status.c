@@ -6,27 +6,26 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:14:21 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/04 14:14:02 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/05 16:47:31 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 
-void	pick_fork(t_philo *philo)
+void	pick_fork(t_philo *philo, long prev_timestamp)
 {
-	long	time;
 	long	printed_time;
 	
-	time = get_time(1);
-	printed_time = time - philo->table->start_time;
 	pthread_mutex_lock(&philo->left_fork->mutex);
 	pthread_mutex_lock(&philo->right_fork->mutex);
+	prev_timestamp = get_time(1);
+	printed_time = prev_timestamp - philo->table->start_time;
 	print_state_change(philo, "has taken a fork", printed_time);
 	print_state_change(philo, "has taken a fork", printed_time);
-	philo->left_fork->last_used = time;
-	philo->right_fork->last_used = time;	
-	philo_eat(philo, time);
+	philo->left_fork->last_used = prev_timestamp;
+	philo->right_fork->last_used = prev_timestamp;
+	philo_eat(philo, prev_timestamp);
 }
 
 void	philo_eat(t_philo *philo, long prev_timestamp)
@@ -41,14 +40,14 @@ void	philo_eat(t_philo *philo, long prev_timestamp)
 		set_bool(&philo->mutex, &philo->full, true);
 	print_state_change(philo, "is eating", printed_time);
 	precise_sleep(philo, philo->table->time_to_eat, prev_timestamp);
-	put_down_forks(philo);
+	put_down_forks(philo, get_time(1));
 }
 
-void	put_down_forks(t_philo *philo)
+void	put_down_forks(t_philo *philo, long prev_timestamp)
 {
 	pthread_mutex_unlock(&philo->left_fork->mutex);
 	pthread_mutex_unlock(&philo->right_fork->mutex);
-	// philo_sleep(philo, prev_timestamp);
+	philo_sleep(philo, prev_timestamp);
 }
 
 void	philo_sleep(t_philo *philo, long prev_timestamp)

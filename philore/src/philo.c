@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 18:41:49 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/04 13:43:58 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/05 16:41:06 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ int	main(int argc, char **argv)
 	// if (start_threads(&table))
 	// 	return (1);
 	join_threads(&table);
+	printf("Simulation ended\n");
 	set_bool(&table.table_data, &table.end_sim, true);
 	pthread_join(monitor_thread, NULL);
 	destroy_everything(&table);
