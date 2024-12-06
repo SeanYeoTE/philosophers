@@ -6,13 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 19:44:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/05 14:06:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/06 17:26:07 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-
 
 int	init_forks(t_table *table)
 {
@@ -56,18 +54,17 @@ int	init_threads(t_table *table)
 		table->philos[i].table = table;
 		if (table->num_philos == 1)
 		{
-			if (!thread_creation(&table->philos[i].thread, solo, &table->philos[i]))
+			if (!tredcreate(&table->philos[i].thread, solo, &table->philos[i]))
 				return (errormsg("Error: Thread creation failed\n"), 1);
 		}
 		else
 		{
-			if (!thread_creation(&table->philos[i].thread, philo_life, &table->philos[i]))
+			if (!tredcreate(&table->philos[i].thread, life, &table->philos[i]))
 				return (errormsg("Error: Thread creation failed\n"), 1);
 		}
 	}
 	assign_forks(table);
 	set_long(&table->table_data, &table->start_time, get_time(1));
-	set_bool(&table->table_data, &table->start_flag, true);
 	return (0);
 }
 
@@ -82,7 +79,7 @@ int	assign_forks(t_table *table)
 	while (i < table->num_philos)
 	{
 		if (i == 0)
-			table->philos[i].left_fork= &table->forks[table->num_philos - 1];
+			table->philos[i].left_fork = &table->forks[table->num_philos - 1];
 		else
 			table->philos[i].left_fork = &table->forks[i - 1];
 		table->philos[i].right_fork = &table->forks[i];

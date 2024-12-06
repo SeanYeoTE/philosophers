@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 18:42:52 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/05 15:54:13 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/06 17:20:08 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,47 +60,45 @@ typedef struct s_table
 	t_philo			*philos;
 }					t_table;
 
-
-int					check_args(int argc, char **argv, t_table *table);
+int			check_args(int argc, char **argv, t_table *table);
 
 // init.c
-int					init_forks(t_table *table);
-int					init_threads(t_table *table);
-int					assign_forks(t_table *table);
-int					init_others(t_table *table);
-
+int			init_forks(t_table *table);
+int			init_threads(t_table *table);
+int			assign_forks(t_table *table);
+int			init_others(t_table *table);
 
 // utils.c
-void				spinlock(bool *start_flag, pthread_mutex_t *table_data);
-void				errormsg(char *s);
-int					ft_atol_assign(const char *str, long *num);
-int					thread_creation(pthread_t *thread,
-						void *(*start_routine)(void *), void *arg);
+void		spinlock(bool *start_flag, pthread_mutex_t *table_data);
+void		errormsg(char *s);
+int			ft_atol_assign(const char *str, long *num);
+int			tredcreate(pthread_t *thread,
+				void *(*start_routine)(void *), void *arg);
 
 // utils2.c
-void				desync_start(long id);
-void				precise_sleep(t_philo *philo, long time, long prev_timestamp);
-void				print_state_change(t_philo *philo, char *state, long timestamp);
-long				get_min_interval(long a, long b, long c);
-		
+void		desync_start(long id);
+void		precise_sleep(t_philo *philo, long time, long prev_timestamp);
+void		print_state_change(t_philo *philo, char *state, long timestamp);
+long		get_min_interval(long a, long b, long c);
+
 // getandset.c
-long				get_time(int type);
-bool				get_bool(pthread_mutex_t *mutex, bool *value);
-void				set_bool(pthread_mutex_t *mutex, bool *value, bool new_value);
-long				get_long(pthread_mutex_t *mutex, long *value);
-void				set_long(pthread_mutex_t *mutex, long *value, long new_value);
+long		get_time(int type);
+bool		get_bool(pthread_mutex_t *mutex, bool *value);
+void		set_bool(pthread_mutex_t *mutex, bool *value, bool new_value);
+long		get_long(pthread_mutex_t *mutex, long *value);
+void		set_long(pthread_mutex_t *mutex, long *value, long new_value);
 
 // process.c
-void				*philo_life(void *arg);
-void				*solo(void *arg);
-int					is_philo_dead(t_philo *philo);
-void				*monitor(void *arg);
+void		*life(void *arg);
+void		*solo(void *arg);
+int			is_philo_dead(t_philo *philo);
+void		*monitor(void *arg);
 
 // philo_status.c
-void				pick_fork(t_philo *philo, long prev_timestamp);
-void				philo_eat(t_philo *philo, long prev_timestamp);
-void				put_down_forks(t_philo *philo, long prev_timestamp);
-void				philo_sleep(t_philo *philo, long prev_timestamp);
-void				philo_think(t_philo *philo, long prev_timestamp);
+void		pick_fork(t_philo *philo, long prev_timestamp);
+void		philo_eat(t_philo *philo, long prev_timestamp);
+void		put_down_forks(t_philo *philo, long prev_timestamp);
+void		philo_sleep(t_philo *philo, long prev_timestamp);
+void		philo_think(t_philo *philo, long prev_timestamp);
 
 #endif

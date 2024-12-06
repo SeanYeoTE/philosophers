@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 19:53:14 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/06 16:24:10 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/06 17:27:36 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,12 @@ bool	hungriest_philo(t_philo *philo)
 {
 	long	times[3];
 
-	times[0] = (get_long(&philo->mutex, &philo->last_meal)) - philo->table->start_time;
-	times[1] = (get_long(&philo->mutex, &philo->left_fork->last_used)) - philo->table->start_time;
-	times[2] = (get_long(&philo->mutex, &philo->right_fork->last_used)) - philo->table->start_time;
+	times[0] = (get_long(&philo->mutex, &philo->last_meal))
+		- philo->table->start_time;
+	times[1] = (get_long(&philo->mutex, &philo->left_fork->last_used))
+		- philo->table->start_time;
+	times[2] = (get_long(&philo->mutex, &philo->right_fork->last_used))
+		- philo->table->start_time;
 	if (times[0] < 0 && times[1] < 0 && times[2] < 0)
 		return (true);
 	if (times[1] != times[0] && times[2] != times[0])
@@ -26,7 +29,7 @@ bool	hungriest_philo(t_philo *philo)
 	return (false);
 }
 
-void	*philo_life(void *arg)
+void	*life(void *arg)
 {
 	t_philo	*philo;
 
@@ -94,8 +97,8 @@ void	*monitor(void *arg)
 	while (!get_bool(&table->table_data, &table->end_sim))
 	{
 		i = -1;
-		while (++i < table->num_philos &&
-			!get_bool(&table->table_data, &table->end_sim))
+		while (++i < table->num_philos
+			&& !get_bool(&table->table_data, &table->end_sim))
 		{
 			time = get_time(1) - table->start_time;
 			if (is_philo_dead(&table->philos[i]))

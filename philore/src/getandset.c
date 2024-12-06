@@ -6,20 +6,21 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 20:06:08 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/04 12:40:17 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/06 17:28:13 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+// type = 0 for milliseconds, 1 for microseconds
 long	get_time(int type)
 {
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
-	if (type == 0) // in milliseconds
+	if (type == 0)
 		return (time.tv_sec * 1000 + time.tv_usec / 1000);
-	else // in microseconds
+	else
 		return (time.tv_sec * 1000000 + time.tv_usec);
 }
 
