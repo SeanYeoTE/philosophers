@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 18:41:49 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/06 17:23:26 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/06 17:36:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,3 +88,6 @@ int	main(int argc, char **argv)
 	pthread_join(monitor_thread, NULL);
 	destroy_everything(&table);
 }
+// to solve the deatht message due to slower philos not ending, 
+// the possible solution is to let philos continue eating after the meal count is reached
+// the subject does not specify that the philos should stop eating after the meal count is reached
