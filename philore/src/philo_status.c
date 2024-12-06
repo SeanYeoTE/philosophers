@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:14:21 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/05 16:47:31 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/06 14:26:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ void	philo_sleep(t_philo *philo, long prev_timestamp)
 	printed_time = prev_timestamp - philo->table->start_time;
 	print_state_change(philo, "is sleeping", printed_time);
 	precise_sleep(philo, philo->table->time_to_sleep, prev_timestamp);
+	if (get_bool(&philo->mutex, &philo->full))
+		return ;
 	philo_think(philo, get_time(1));
 }
 

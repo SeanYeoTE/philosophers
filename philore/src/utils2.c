@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:45:09 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/05 17:52:07 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/06 14:21:57 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ void	precise_sleep(t_philo *philo, long time, long prev_timestamp)
 	endingtime = prev_timestamp + time;
 	while (get_time(1) < endingtime)
 	{
-		// if (get_bool(&philo->table->table_data, &philo->table->end_sim))
-		// 	break ;
 		usleep(philo->table->interval);
 	}
 }
@@ -58,14 +56,11 @@ void	print_state_change(t_philo *philo, char *state, long timestamp)
 {
 	pthread_mutex_lock(&philo->table->print);
 	timestamp = timestamp / 1000;
-	// printf("am i coming here!!!!!\n");
 	if (!get_bool(&philo->table->table_data, &philo->table->end_sim))
 		printf("%ld %ld %s\n", timestamp, philo->id + 1, state);
 	
 	else if (ft_strcmp(state, "died") == 0 && get_bool(&philo->mutex, &philo->dead))
 	{
-		// printf("am i coming here\n");
-		// if (!get_bool(&philo->mutex, &philo->full))
 		printf("%ld %ld %s\n", timestamp, philo->id + 1, state);
 	}
 	pthread_mutex_unlock(&philo->table->print);
