@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 18:41:49 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/05 16:41:06 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/06 17:11:06 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ int	check_args(int argc, char **argv, t_table *table)
 	{
 		if (ft_atol_assign(argv[5], &table->num_meals))
 			return (errormsg("Error: Invalid number of meals"), 1);
+		if (table->num_meals <= 0)
+			return (errormsg("Error: Number of meals less than zero"), 1);
 	}
 	else
 		table->num_meals = -1;
@@ -39,7 +41,7 @@ int	check_args(int argc, char **argv, t_table *table)
 
 int	start_threads(t_table *table)
 {
-	int	i;
+	int		i;
 	t_philo	*philo;
 
 	i = 0;
@@ -75,6 +77,7 @@ void	join_threads(t_table *table)
 		i++;
 	}	
 }
+
 void	destroy_everything(t_table *table)
 {
 	int	i;
@@ -106,10 +109,7 @@ int	main(int argc, char **argv)
 	pthread_create(&monitor_thread, NULL, monitor, &table);
 	if (init_threads(&table))
 		return (1);
-	// if (start_threads(&table))
-	// 	return (1);
 	join_threads(&table);
-	printf("Simulation ended\n");
 	set_bool(&table.table_data, &table.end_sim, true);
 	pthread_join(monitor_thread, NULL);
 	destroy_everything(&table);

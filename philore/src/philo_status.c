@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:14:21 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/06 14:26:48 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/06 16:17:10 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ void	philo_eat(t_philo *philo, long prev_timestamp)
 	set_long(&philo->mutex, &philo->last_meal, prev_timestamp);
 	set_long(&philo->mutex, &philo->meals, get_long(&philo->mutex,
 			&philo->meals) + 1);
-	if (get_long(&philo->mutex, &philo->meals) == philo->table->num_meals)
+	if (get_long(&philo->mutex, &philo->meals) == philo->table->num_meals
+			&&	philo->table->num_meals > 0)
 		set_bool(&philo->mutex, &philo->full, true);
 	print_state_change(philo, "is eating", printed_time);
 	precise_sleep(philo, philo->table->time_to_eat, prev_timestamp);

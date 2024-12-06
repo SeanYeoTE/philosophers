@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 19:53:14 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/06 14:21:49 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/06 16:24:10 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void	*philo_life(void *arg)
 				break ;
 		}
 	}
+	printf("Philo %ld ends\n", philo->id + 1);
 	return (NULL);
 }
 
@@ -62,6 +63,7 @@ void	*solo(void *arg)
 	while (!get_bool(&philo->table->table_data, &philo->table->end_sim))
 	{
 		usleep(50000);
+		printf("Philo %ld thinking\n", philo->id + 1);
 	}
 	return (NULL);
 }

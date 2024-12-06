@@ -6,7 +6,7 @@
 #    By: seayeo <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 13:42:23 by seayeo            #+#    #+#              #
-#    Updated: 2024/11/23 23:59:01 by seayeo           ###   ########.fr        #
+#    Updated: 2024/12/06 15:41:38 by seayeo           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ OBJ_PATH = objs/
 OBJS = $(addprefix $(OBJ_PATH), $(OBJ))
 
 CC = gcc
-CFLAGS = -g -Wall -Wextra -Werror -fsanitize=address
+CFLAGS = -g -Wall -Wextra -Werror
 RM = rm -f
 	
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
