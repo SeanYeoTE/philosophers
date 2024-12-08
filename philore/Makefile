@@ -6,7 +6,7 @@
 #    By: seayeo <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/16 13:42:23 by seayeo            #+#    #+#              #
-#    Updated: 2024/12/06 15:41:38 by seayeo           ###   ########.fr        #
+#    Updated: 2024/12/08 17:47:06 by seayeo           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,8 @@ SRC = 	philo.c \
 		philo_status.c \
 		process.c \
 		utils.c \
-		utils2.c
+		utils2.c \
+		utils3.c
 
 SRCS = $(addprefix $(SRC_PATH), $(SRC))
 

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:14:21 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/06 17:30:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/08 17:37:19 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,6 @@ void	philo_eat(t_philo *philo, long prev_timestamp)
 	set_long(&philo->mutex, &philo->last_meal, prev_timestamp);
 	set_long(&philo->mutex, &philo->meals, get_long(&philo->mutex,
 			&philo->meals) + 1);
-	if (get_long(&philo->mutex, &philo->meals) == philo->table->num_meals
-		&& philo->table->num_meals > 0)
-		set_bool(&philo->mutex, &philo->full, true);
 	print_state_change(philo, "is eating", printed_time);
 	precise_sleep(philo, philo->table->time_to_eat, prev_timestamp);
 	put_down_forks(philo, get_time(1));
@@ -47,6 +44,9 @@ void	put_down_forks(t_philo *philo, long prev_timestamp)
 {
 	pthread_mutex_unlock(&philo->left_fork->mutex);
 	pthread_mutex_unlock(&philo->right_fork->mutex);
+	if (get_long(&philo->mutex, &philo->meals) == philo->table->num_meals
+		&& philo->table->num_meals > 0)
+		set_bool(&philo->mutex, &philo->full, true);
 	philo_sleep(philo, prev_timestamp);
 }
 

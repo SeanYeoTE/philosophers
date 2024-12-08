@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 18:42:52 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/06 17:20:08 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/08 17:46:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,10 @@ void		precise_sleep(t_philo *philo, long time, long prev_timestamp);
 void		print_state_change(t_philo *philo, char *state, long timestamp);
 long		get_min_interval(long a, long b, long c);
 
+// utils3.c
+void		dead_do_this(t_table *table, long i, long time);
+bool		all_philo_full(t_table *table);
+
 // getandset.c
 long		get_time(int type);
 bool		get_bool(pthread_mutex_t *mutex, bool *value);
@@ -92,6 +96,7 @@ void		set_long(pthread_mutex_t *mutex, long *value, long new_value);
 void		*life(void *arg);
 void		*solo(void *arg);
 int			is_philo_dead(t_philo *philo);
+bool		all_philo_full(t_table *table);
 void		*monitor(void *arg);
 
 // philo_status.c

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 19:53:14 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/06 17:27:36 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/08 18:19:02 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,11 @@ void	*life(void *arg)
 	desync_start(philo->id);
 	while (!get_bool(&philo->table->table_data, &philo->table->end_sim))
 	{
-		if (get_bool(&philo->mutex, &philo->full))
-			break ;
-		else if (hungriest_philo(philo))
+		if (hungriest_philo(philo))
 		{
 			pick_fork(philo, get_time(1));
-			if (get_bool(&philo->mutex, &philo->full))
-				break ;
 		}
 	}
-	printf("Philo %ld ends\n", philo->id + 1);
 	return (NULL);
 }
 
@@ -66,7 +61,6 @@ void	*solo(void *arg)
 	while (!get_bool(&philo->table->table_data, &philo->table->end_sim))
 	{
 		usleep(50000);
-		printf("Philo %ld thinking\n", philo->id + 1);
 	}
 	return (NULL);
 }
@@ -103,12 +97,12 @@ void	*monitor(void *arg)
 			time = get_time(1) - table->start_time;
 			if (is_philo_dead(&table->philos[i]))
 			{
-				set_bool(&table->philos[i].mutex, &table->philos[i].dead, true);
-				set_bool(&table->table_data, &table->end_sim, true);
-				print_state_change(&table->philos[i], "died", time);
+				dead_do_this(table, i, time);
 				return (NULL);
 			}
 		}
+		if (all_philo_full(table))
+			set_bool(&table->table_data, &table->end_sim, true);
 	}
 	return (NULL);
 }
