@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 19:09:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/23 23:57:52 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/08 17:46:09 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ int	ft_atol_assign(const char *str, long *num)
 
 	res = 0;
 	sign = 1;
-	while (*str == ' ' || *str == '\t' || *str == '\n' || *str == '\v' || *str == '\f' || *str == '\r')
+	while (*str == ' ' || *str == '\t' || *str == '\n'
+		|| *str == '\v' || *str == '\f' || *str == '\r')
 		str++;
 	if (*str == '-')
 		sign = -1;
@@ -48,7 +49,7 @@ int	ft_atol_assign(const char *str, long *num)
 	return (0);
 }
 
-int	thread_creation(pthread_t *thread,
+int	tredcreate(pthread_t *thread,
 	void *(*start_routine)(void *), void *arg)
 {
 	if (pthread_create(thread, NULL, start_routine, arg) != 0)

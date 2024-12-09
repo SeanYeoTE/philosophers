@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 18:41:49 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/24 01:24:10 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/08 17:46:34 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,39 +28,14 @@ int	check_args(int argc, char **argv, t_table *table)
 	{
 		if (ft_atol_assign(argv[5], &table->num_meals))
 			return (errormsg("Error: Invalid number of meals"), 1);
+		if (table->num_meals <= 0)
+			return (errormsg("Error: Number of meals less than zero"), 1);
 	}
 	else
 		table->num_meals = -1;
 	if (table->num_philos <= 0 || table->time_to_die < 60
 		|| table->time_to_eat < 60 || table->time_to_sleep < 60)
 		return (errormsg("Error: Invalid arguments\n"), 1);
-	return (0);
-}
-
-int	start_threads(t_table *table)
-{
-	int	i;
-	t_philo	*philo;
-
-	i = 0;
-	if (table->num_philos == 1)
-	{
-		philo = &table->philos[0];
-		if (!thread_creation(&philo->thread, solo, philo))
-			return (errormsg("Error: Thread creation failed\n"), 1);
-	}
-	else
-	{
-		while (i < table->num_philos)
-		{
-			philo = &table->philos[i];
-			if (!thread_creation(&philo->thread, philo_life, philo))
-				return (errormsg("Error: Thread creation failed\n"), 1);
-			i++;
-		}
-	}
-	printf("Simulation started\n");
-	set_bool(&table->table_data, &table->start_flag, true);
 	return (0);
 }
 
@@ -75,6 +50,7 @@ void	join_threads(t_table *table)
 		i++;
 	}	
 }
+
 void	destroy_everything(t_table *table)
 {
 	int	i;
@@ -106,8 +82,7 @@ int	main(int argc, char **argv)
 	pthread_create(&monitor_thread, NULL, monitor, &table);
 	if (init_threads(&table))
 		return (1);
-	if (start_threads(&table))
-		return (1);
+	set_bool(&table.table_data, &table.start_flag, true);
 	join_threads(&table);
 	set_bool(&table.table_data, &table.end_sim, true);
 	pthread_join(monitor_thread, NULL);
